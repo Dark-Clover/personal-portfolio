@@ -28,4 +28,3 @@ const VerticalSlider = ({
 }
 
 export default VerticalSlider
-

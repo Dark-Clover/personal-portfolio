@@ -17,4 +17,3 @@ const TrueFocus = ({ sentence = "True Focus", className = "" }: TrueFocusProps) 
 }
 
 export default TrueFocus
-

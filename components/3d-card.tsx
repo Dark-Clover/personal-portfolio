@@ -75,4 +75,3 @@ export default function Card3D({ children, className = "" }: Card3DProps) {
     </motion.div>
   )
 }
-

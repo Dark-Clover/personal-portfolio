@@ -1,9 +1,10 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Github, Linkedin, Instagram, Mail, Heart, Code, Terminal, ExternalLink } from "lucide-react"
+import { Github, Linkedin, Instagram, Mail, Heart, Code, Terminal } from "lucide-react"
 import GlitchText from "./glitch-text"
 import { Button } from "@/components/ui/button"
+import ResumeDownloadButton from "./resume-download-button"
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -183,17 +184,11 @@ export default Portfolio;
               </a>
             </Button>
 
-            <Button
+            <ResumeDownloadButton
               variant="outline"
               size="sm"
               className="bg-gray-800/50 border-gray-700 text-white hover:bg-gray-800 w-full"
-              asChild
-            >
-              <a href="/usman-resume.pdf" download>
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Download Resume
-              </a>
-            </Button>
+            />
           </motion.div>
         </div>
 
@@ -227,4 +222,3 @@ export default Portfolio;
     </footer>
   )
 }
-

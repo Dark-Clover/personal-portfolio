@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, memo } from "react"
 import { useTheme } from "next-themes"
 
 interface Particle {
@@ -12,32 +12,46 @@ interface Particle {
   color: string
 }
 
-export default function ParticleBackground() {
+function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { theme } = useTheme()
   const [isVisible, setIsVisible] = useState(true)
   const particlesRef = useRef<Particle[]>([])
   const animationRef = useRef<number>()
+  const lastTimeRef = useRef<number>(0)
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const ctx = canvas.getContext("2d")
+    const ctx = canvas.getContext("2d", { alpha: true, desynchronized: true })
     if (!ctx) return
 
     // Set canvas to full screen
     const handleResize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-      
+      const dpr = Math.min(window.devicePixelRatio, 2)
+      canvas.width = window.innerWidth * dpr
+      canvas.height = window.innerHeight * dpr
+      canvas.style.width = `${window.innerWidth}px`
+      canvas.style.height = `${window.innerHeight}px`
+      ctx.scale(dpr, dpr)
+
       // Recreate particles on resize to ensure proper distribution
       initParticles()
     }
 
     // Create particles
     const initParticles = () => {
-      const particleCount = Math.min(Math.floor(window.innerWidth / 20), 50) // Reduced particle count
+      // Adjust particle count based on screen size
+      const width = window.innerWidth
+      let particleCount = 15 // Further reduced for better performance
+
+      if (width < 768) {
+        particleCount = 8 // Mobile
+      } else if (width < 1024) {
+        particleCount = 12 // Tablet
+      }
+
       particlesRef.current = []
 
       for (let i = 0; i < particleCount; i++) {
@@ -45,8 +59,8 @@ export default function ParticleBackground() {
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           size: Math.random() * 1.5 + 0.5, // Smaller particles
-          speedX: (Math.random() - 0.5) * 0.3, // Slower movement
-          speedY: (Math.random() - 0.5) * 0.3,
+          speedX: (Math.random() - 0.5) * 0.2, // Slower movement
+          speedY: (Math.random() - 0.5) * 0.2,
           color: theme === "dark" ? "#10b981" : "#059669",
         })
       }
@@ -54,7 +68,7 @@ export default function ParticleBackground() {
 
     // Connect particles with lines if they're close enough
     const connectParticles = () => {
-      const maxDistance = 120 // Reduced connection distance
+      const maxDistance = 100 // Reduced connection distance
 
       for (let i = 0; i < particlesRef.current.length; i++) {
         for (let j = i + 1; j < particlesRef.current.length; j++) {
@@ -77,23 +91,31 @@ export default function ParticleBackground() {
       }
     }
 
-    // Animation loop
-    const animate = () => {
-      if (!isVisible) return
-      
+    // Animation loop with time-based animation and throttling
+    const animate = (timestamp: number) => {
+      if (!isVisible) {
+        animationRef.current = requestAnimationFrame(animate)
+        return
+      }
+
+      // Calculate delta time for smooth animation regardless of frame rate
+      const deltaTime = timestamp - lastTimeRef.current
+      lastTimeRef.current = timestamp
+
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       // Update and draw particles
       for (const particle of particlesRef.current) {
-        particle.x += particle.speedX
-        particle.y += particle.speedY
+        // Use delta time to make movement frame-rate independent
+        particle.x += particle.speedX * (deltaTime / 16)
+        particle.y += particle.speedY * (deltaTime / 16)
 
         // Bounce off edges
-        if (particle.x < 0 || particle.x > canvas.width) {
+        if (particle.x < 0 || particle.x > window.innerWidth) {
           particle.speedX = -particle.speedX
         }
 
-        if (particle.y < 0 || particle.y > canvas.height) {
+        if (particle.y < 0 || particle.y > window.innerHeight) {
           particle.speedY = -particle.speedY
         }
 
@@ -109,30 +131,35 @@ export default function ParticleBackground() {
     }
 
     // Visibility observer to pause animation when not visible
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        setIsVisible(entry.isIntersecting)
-      })
-    }, { threshold: 0.1 });
-    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsVisible(entry.isIntersecting)
+        })
+      },
+      { threshold: 0.1 },
+    )
+
     if (canvas) {
-      observer.observe(canvas);
+      observer.observe(canvas)
     }
 
-    window.addEventListener("resize", handleResize)
+    window.addEventListener("resize", handleResize, { passive: true })
     handleResize()
     initParticles()
-    animate()
+    lastTimeRef.current = performance.now()
+    animationRef.current = requestAnimationFrame(animate)
 
     return () => {
       window.removeEventListener("resize", handleResize)
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
       }
-      observer.disconnect();
+      observer.disconnect()
     }
   }, [theme, isVisible])
 
-  return <canvas ref={canvasRef} className="fixed inset-0 z-0 opacity-40 pointer-events-none optimize-gpu" />
+  return <canvas ref={canvasRef} className="fixed inset-0 z-0 opacity-40 pointer-events-none will-change-transform" />
 }
 
+export default memo(ParticleBackground)

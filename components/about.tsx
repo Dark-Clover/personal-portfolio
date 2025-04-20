@@ -1,18 +1,22 @@
 "use client"
 
+import { memo } from "react"
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
-import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import OptimizedImage from "./image-optimizer"
 
+// Move skills data outside component to prevent recreation on each render
 const skills = [
   { name: "Linux", category: "os" },
   { name: "Flutter", category: "mobile" },
   { name: "Firebase", category: "backend" },
   { name: "C++", category: "language" },
   { name: "Python", category: "language" },
+  { name: "SQL", category: "database" },
+  { name: "HTML/CSS", category: '  category: "language' },
   { name: "SQL", category: "database" },
   { name: "HTML/CSS", category: "frontend" },
   { name: "Web Dev", category: "frontend" },
@@ -23,9 +27,9 @@ const skills = [
   { name: "Critical Thinking", category: "soft" },
 ]
 
-export default function About() {
+function About() {
   const [ref, inView] = useInView({
-    triggerOnce: false,
+    triggerOnce: true,
     threshold: 0.1,
   })
 
@@ -36,7 +40,7 @@ export default function About() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.05,
       },
     },
   }
@@ -46,12 +50,12 @@ export default function About() {
     visible: {
       y: 0,
       opacity: 1,
-      transition: { duration: 0.5 },
+      transition: { duration: 0.3 },
     },
   }
 
   return (
-    <section id="about" className="section-container">
+    <section id="about" className="section-container content-visibility-auto">
       <motion.div
         ref={ref}
         variants={containerVariants}
@@ -68,12 +72,13 @@ export default function About() {
             <Card className="overflow-hidden border-emerald-500/20 bg-opacity-80 backdrop-blur-sm">
               <CardContent className="p-0">
                 <div className="relative h-[300px] md:h-[400px] w-full">
-                  <Image
+                  <OptimizedImage
                     src="/profile-image.png"
                     alt="Usman Arshad"
                     fill
                     className="object-cover rounded-md"
                     priority
+                    sizes="(max-width: 768px) 100vw, 50vw"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
                   <div className="absolute bottom-4 left-4 right-4">
@@ -106,8 +111,8 @@ export default function About() {
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: index * 0.05 }}
+                    animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+                    transition={{ delay: index * 0.03 }}
                     className="transition-all duration-200 hover:translate-y-[-2px]"
                   >
                     <Badge
@@ -127,3 +132,4 @@ export default function About() {
   )
 }
 
+export default memo(About)
