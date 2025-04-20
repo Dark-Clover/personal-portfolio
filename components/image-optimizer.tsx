@@ -77,13 +77,23 @@ function OptimizedImage({
         position: fill ? "relative" : "static",
       }}
     >
+      {/* Placeholder while loading */}
+      {!isLoaded && (
+        <div
+          className="absolute inset-0 bg-gray-800 animate-pulse"
+          style={{
+            zIndex: 1,
+          }}
+        />
+      )}
+
       <Image
         src={hasError ? fallbackSrc : imgSrc}
         alt={alt}
         width={fill ? undefined : width}
         height={fill ? undefined : height}
         fill={fill}
-        className={`${className} ${!isLoaded ? "opacity-80" : "opacity-100"}`}
+        className={`${className} ${!isLoaded ? "opacity-0" : "opacity-100"}`}
         style={combinedStyles}
         priority={priority}
         sizes={sizes}
@@ -91,7 +101,6 @@ function OptimizedImage({
         loading={loading}
         onLoadingComplete={handleLoadComplete}
         onError={handleError}
-        unoptimized={true} // For static export
       />
     </div>
   )

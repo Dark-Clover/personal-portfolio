@@ -61,8 +61,8 @@
     radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0, 0, 0, 0));
   background-repeat: repeat;
   background-size: 200px 200px;
-  animation: stars-animation 100s linear infinite;
-  opacity: 0.3;
+  animation: stars-animation 200s linear infinite;
+  opacity: 0.2;
   will-change: background-position;
   transform: translateZ(0);
   backface-visibility: hidden;
@@ -109,23 +109,6 @@
   @apply transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/20;
 }
 
-.alien-icon {
-  @apply text-emerald-500 opacity-0 absolute;
-  animation: float 10s infinite ease-in-out;
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 0.2;
-  }
-  50% {
-    transform: translateY(-20px) rotate(5deg);
-    opacity: 0.5;
-  }
-}
-
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -163,22 +146,6 @@
 
 .hover-lift:hover {
   transform: translateY(-5px);
-}
-
-.pulse {
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 
 /* Terminal cursor animation */
@@ -232,23 +199,6 @@
   transition: all 0.3s ease;
 }
 
-/* Code typing animation */
-@keyframes typing {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-.typing-animation {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  animation: typing 3.5s steps(40, end);
-}
-
 /* Optimize animations */
 .smooth-scroll {
   will-change: opacity;
@@ -274,16 +224,6 @@
 .content-visibility-auto {
   content-visibility: auto;
   contain-intrinsic-size: 0 500px;
-}
-
-/* Image shimmer effect */
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
 }
 
 /* Project card hover effects */

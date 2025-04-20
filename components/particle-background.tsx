@@ -29,7 +29,7 @@ function ParticleBackground() {
 
     // Set canvas to full screen
     const handleResize = () => {
-      const dpr = Math.min(window.devicePixelRatio, 2)
+      const dpr = 1 // Use a fixed DPR of 1 for better performance
       canvas.width = window.innerWidth * dpr
       canvas.height = window.innerHeight * dpr
       canvas.style.width = `${window.innerWidth}px`
@@ -44,12 +44,12 @@ function ParticleBackground() {
     const initParticles = () => {
       // Adjust particle count based on screen size
       const width = window.innerWidth
-      let particleCount = 15 // Further reduced for better performance
+      let particleCount = 8 // Further reduced for better performance
 
       if (width < 768) {
-        particleCount = 8 // Mobile
+        particleCount = 4 // Mobile
       } else if (width < 1024) {
-        particleCount = 12 // Tablet
+        particleCount = 6 // Tablet
       }
 
       particlesRef.current = []
@@ -59,8 +59,8 @@ function ParticleBackground() {
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           size: Math.random() * 1.5 + 0.5, // Smaller particles
-          speedX: (Math.random() - 0.5) * 0.2, // Slower movement
-          speedY: (Math.random() - 0.5) * 0.2,
+          speedX: (Math.random() - 0.5) * 0.05, // Much slower movement
+          speedY: (Math.random() - 0.5) * 0.05,
           color: theme === "dark" ? "#10b981" : "#059669",
         })
       }
@@ -68,7 +68,7 @@ function ParticleBackground() {
 
     // Connect particles with lines if they're close enough
     const connectParticles = () => {
-      const maxDistance = 100 // Reduced connection distance
+      const maxDistance = 80 // Reduced connection distance
 
       for (let i = 0; i < particlesRef.current.length; i++) {
         for (let j = i + 1; j < particlesRef.current.length; j++) {
@@ -80,7 +80,7 @@ function ParticleBackground() {
             // Set opacity based on distance
             const opacity = 1 - distance / maxDistance
             ctx.strokeStyle =
-              theme === "dark" ? `rgba(16, 185, 129, ${opacity * 0.15})` : `rgba(5, 150, 105, ${opacity * 0.15})`
+              theme === "dark" ? `rgba(16, 185, 129, ${opacity * 0.1})` : `rgba(5, 150, 105, ${opacity * 0.1})`
             ctx.lineWidth = 0.5 // Thinner lines
             ctx.beginPath()
             ctx.moveTo(particlesRef.current[i].x, particlesRef.current[i].y)
@@ -94,6 +94,12 @@ function ParticleBackground() {
     // Animation loop with time-based animation and throttling
     const animate = (timestamp: number) => {
       if (!isVisible) {
+        animationRef.current = requestAnimationFrame(animate)
+        return
+      }
+
+      // Throttle to 30fps for better performance
+      if (timestamp - lastTimeRef.current < 33) {
         animationRef.current = requestAnimationFrame(animate)
         return
       }
@@ -159,7 +165,7 @@ function ParticleBackground() {
     }
   }, [theme, isVisible])
 
-  return <canvas ref={canvasRef} className="fixed inset-0 z-0 opacity-40 pointer-events-none will-change-transform" />
+  return <canvas ref={canvasRef} className="fixed inset-0 z-0 opacity-20 pointer-events-none will-change-transform" />
 }
 
 export default memo(ParticleBackground)

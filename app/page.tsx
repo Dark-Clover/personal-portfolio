@@ -1,20 +1,13 @@
 "use client"
 
-import { useEffect, useState, useRef, Suspense, lazy } from "react"
+import { useEffect, useState, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Toaster } from "@/components/ui/toaster"
+import dynamic from "next/dynamic"
+
+// Simple components loaded normally
 import GlitchText from "@/components/glitch-text"
 import TerminalText from "@/components/terminal-text"
-
-// Dynamically import components with code splitting for better performance
-const Navbar = lazy(() => import("@/components/navbar"))
-const Hero = lazy(() => import("@/components/hero"))
-const About = lazy(() => import("@/components/about"))
-const ProjectShowcase = lazy(() => import("@/components/project-showcase"))
-const Resume = lazy(() => import("@/components/resume"))
-const Contact = lazy(() => import("@/components/contact"))
-const Footer = lazy(() => import("@/components/footer"))
-const ParticleBackground = lazy(() => import("@/components/particle-background"))
 
 // Simple loading component for lazy-loaded sections
 const SectionLoader = () => (
@@ -23,17 +16,49 @@ const SectionLoader = () => (
   </div>
 )
 
+// Dynamically import components with lower loading priority
+const Navbar = dynamic(() => import("@/components/navbar"), {
+  ssr: true,
+  loading: () => <div className="h-16 bg-background/80 backdrop-blur-md shadow-md"></div>,
+})
+
+const Hero = dynamic(() => import("@/components/hero"), {
+  ssr: true,
+  loading: () => <SectionLoader />,
+})
+
+// Load these components immediately but with dynamic import
+const About = dynamic(() => import("@/components/about"), {
+  loading: () => <SectionLoader />,
+})
+
+const ProjectShowcase = dynamic(() => import("@/components/project-showcase"), {
+  loading: () => <SectionLoader />,
+})
+
+const Resume = dynamic(() => import("@/components/resume"), {
+  loading: () => <SectionLoader />,
+})
+
+const Contact = dynamic(() => import("@/components/contact"), {
+  loading: () => <SectionLoader />,
+})
+
+const Footer = dynamic(() => import("@/components/footer"), {
+  loading: () => <SectionLoader />,
+})
+
+// Load particle background with lowest priority
+const ParticleBackground = dynamic(() => import("@/components/particle-background"), {
+  ssr: false,
+  loading: () => null,
+})
+
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [isParticlesEnabled, setIsParticlesEnabled] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
   const sectionsRef = useRef<HTMLDivElement>(null)
-  const [visibleSections, setVisibleSections] = useState({
-    about: false,
-    projects: false,
-    resume: false,
-    contact: false,
-  })
 
   // Handle client-side hydration
   useEffect(() => {
@@ -58,65 +83,17 @@ export default function Home() {
 
     // Preload critical components
     const preloadComponents = async () => {
-      // Simulate loading time but shorter
+      // Shorter loading time
       setTimeout(() => {
         setIsLoading(false)
-      }, 800)
+      }, 500)
     }
 
     preloadComponents()
 
-    // Set up intersection observer for sections
-    const observeSections = () => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            const id = entry.target.id
-            if (id && ["about", "projects", "resume", "contact"].includes(id)) {
-              if (entry.isIntersecting) {
-                setVisibleSections((prev) => ({ ...prev, [id]: true }))
-              }
-            }
-          })
-        },
-        { threshold: 0.1, rootMargin: "0px 0px -10% 0px" },
-      )
-
-      // Observe each section
-      document.querySelectorAll("section[id]").forEach((section) => {
-        observer.observe(section)
-      })
-
-      return observer
-    }
-
-    // Set up observer after initial render
-    let observer: IntersectionObserver
-    if (!isLoading) {
-      setTimeout(() => {
-        observer = observeSections()
-      }, 1000)
-    }
-
-    return () => {
-      if (observer) {
-        observer.disconnect()
-      }
-    }
-  }, [isLoading, isHydrated])
-
-  // Preload critical assets
-  useEffect(() => {
-    if (!isHydrated) return
-
+    // Preload critical assets
     const preloadImages = () => {
-      const criticalImages = [
-        "/profile-image.png",
-        "/triadic-marketing.png",
-        "/saleha.png",
-        "/heart2heart.png",
-        "/kings-men.png",
-      ]
+      const criticalImages = ["/profile-image.png"]
 
       criticalImages.forEach((src) => {
         const img = new Image()
@@ -132,11 +109,7 @@ export default function Home() {
       <div className="stars-container fixed inset-0 z-0 opacity-30" />
 
       {/* Only load particles if enabled */}
-      {isHydrated && isParticlesEnabled && (
-        <Suspense fallback={null}>
-          <ParticleBackground />
-        </Suspense>
-      )}
+      {isHydrated && isParticlesEnabled && <ParticleBackground />}
 
       <AnimatePresence mode="wait">
         {isLoading ? (
@@ -165,12 +138,7 @@ export default function Home() {
                   startDelay={300}
                   className="mb-2"
                 />
-                <TerminalText
-                  text="Generating static HTML export..."
-                  typingSpeed={15}
-                  startDelay={600}
-                  className="mb-2"
-                />
+                <TerminalText text="Compiling..." typingSpeed={15} startDelay={600} className="mb-2" />
                 <TerminalText
                   text="✓ Compiled successfully"
                   typingSpeed={15}
@@ -178,7 +146,7 @@ export default function Home() {
                   className="text-white mb-2"
                 />
                 <TerminalText
-                  text="✓ Export successful! Files written to /out"
+                  text="✓ Ready for deployment!"
                   typingSpeed={15}
                   startDelay={1200}
                   className="text-green-400"
@@ -200,30 +168,14 @@ export default function Home() {
             ref={sectionsRef}
             className="smooth-scroll"
           >
-            <Suspense fallback={<SectionLoader />}>
-              <Navbar />
-            </Suspense>
+            <Navbar />
             <div className="container mx-auto px-4">
-              <Suspense fallback={<SectionLoader />}>
-                <Hero />
-              </Suspense>
-
-              {/* Load sections with dynamic imports */}
-              <Suspense fallback={<SectionLoader />}>
-                <About />
-              </Suspense>
-              <Suspense fallback={<SectionLoader />}>
-                <ProjectShowcase />
-              </Suspense>
-              <Suspense fallback={<SectionLoader />}>
-                <Resume />
-              </Suspense>
-              <Suspense fallback={<SectionLoader />}>
-                <Contact />
-              </Suspense>
-              <Suspense fallback={<SectionLoader />}>
-                <Footer />
-              </Suspense>
+              <Hero />
+              <About />
+              <ProjectShowcase />
+              <Resume />
+              <Contact />
+              <Footer />
             </div>
           </motion.div>
         )}

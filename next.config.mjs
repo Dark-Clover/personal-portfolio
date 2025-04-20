@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export', // Creates the 'out' folder for static export
-  trailingSlash: true,
+  // Image optimization
   images: {
-    unoptimized: true, // Required for static export
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60, // Cache images for at least 60 seconds
   },
+  // Build optimizations
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -13,29 +14,23 @@ const nextConfig = {
   },
   // Performance optimizations
   experimental: {
-    optimizePackageImports: ['framer-motion', 'lucide-react', 'three'],
-    // Enable modern JavaScript features
-    serverActions: {
-      bodySizeLimit: '2mb',
-    },
+    optimizePackageImports: ['framer-motion', 'lucide-react'],
+    // Disable features that might cause performance issues
+    serverComponents: false,
+    concurrentFeatures: false,
   },
   // Improve build performance
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  // Optimize font loading
-  fontLoaders: [
-    { loader: '@next/font/google', options: { subsets: ['latin'] } },
-  ],
+  // Add compression
+  compress: true,
+  // Add powered by header
+  poweredByHeader: false,
+  // Add React strict mode
+  reactStrictMode: true,
   // Reduce bundle size
-  webpack: (config) => {
-    // Optimize SVG imports
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ['@svgr/webpack'],
-    });
-    return config;
-  },
+  swcMinify: true,
 }
 
 export default nextConfig

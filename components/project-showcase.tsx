@@ -18,8 +18,17 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import OptimizedImage from "./image-optimizer"
+import dynamic from "next/dynamic"
 import { useMediaQuery } from "@/hooks/use-media-query"
+
+// Dynamically import the OptimizedImage component
+const OptimizedImage = dynamic(() => import("./image-optimizer"), {
+  ssr: true,
+  loading: ({ isLoading, error }) => {
+    if (error) return <div className="bg-gray-800 animate-pulse h-full w-full"></div>
+    return isLoading ? <div className="bg-gray-800 animate-pulse h-full w-full"></div> : null
+  },
+})
 
 // Project type definition
 interface Project {
@@ -372,7 +381,7 @@ const FeaturedProjectSlider = memo(
 
 FeaturedProjectSlider.displayName = "FeaturedProjectSlider"
 
-// Project Card component
+// Project Card component - Optimized with lazy loading
 const ProjectCard = memo(
   ({
     project,
@@ -385,7 +394,7 @@ const ProjectCard = memo(
     const [cardRef, cardInView] = useInView({
       triggerOnce: true,
       threshold: 0.1,
-      rootMargin: "100px",
+      rootMargin: "200px",
     })
     const [isImageLoaded, setIsImageLoaded] = useState(false)
 
@@ -439,18 +448,20 @@ const ProjectCard = memo(
               </div>
             )}
 
-            <OptimizedImage
-              src={project.image}
-              alt={project.title}
-              fill
-              className="object-cover transition-all duration-500"
-              style={{
-                transform: isHovered ? "scale(1.05)" : "scale(1)",
-                willChange: "transform",
-              }}
-              lazyBoundary="300px"
-              onLoadingComplete={() => setIsImageLoaded(true)}
-            />
+            {cardInView && (
+              <OptimizedImage
+                src={project.image}
+                alt={project.title}
+                fill
+                className="object-cover transition-all duration-500"
+                style={{
+                  transform: isHovered ? "scale(1.05)" : "scale(1)",
+                  willChange: "transform",
+                }}
+                loading="lazy"
+                onLoadingComplete={() => setIsImageLoaded(true)}
+              />
+            )}
 
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-70" />
 
@@ -586,7 +597,7 @@ export default function ProjectShowcase() {
       // Then preload other images based on active category
       setTimeout(() => {
         const projectsToPreload =
-          activeCategory === "all" ? projects.filter((p) => !p.featured).slice(0, 6) : filteredProjects.slice(0, 6)
+          activeCategory === "all" ? projects.filter((p) => !p.featured).slice(0, 3) : filteredProjects.slice(0, 3)
 
         projectsToPreload.forEach((project) => {
           const img = new Image()
@@ -596,7 +607,7 @@ export default function ProjectShowcase() {
     }
 
     preloadImages()
-  }, [activeCategory, filteredProjects, projects])
+  }, [activeCategory, filteredProjects])
 
   return (
     <section id="projects" className="section-container">
