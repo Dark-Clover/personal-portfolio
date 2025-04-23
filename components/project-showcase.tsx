@@ -1,7 +1,8 @@
 "use client"
 
-import { useMemo } from "react"
-import { useState, useRef, useEffect, memo, useCallback } from "react"
+import type React from "react"
+
+import { useMemo, useState, useRef, useEffect, memo, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import {
@@ -21,12 +22,11 @@ import { Badge } from "@/components/ui/badge"
 import dynamic from "next/dynamic"
 import { useMediaQuery } from "@/hooks/use-media-query"
 
-// Dynamically import the OptimizedImage component
-const OptimizedImage = dynamic(() => import("./image-optimizer"), {
+// Dynamically import the optimized image component
+const PerformanceImage = dynamic(() => import("./performance-image"), {
   ssr: true,
-  loading: ({ isLoading, error }) => {
-    if (error) return <div className="bg-gray-800 animate-pulse h-full w-full"></div>
-    return isLoading ? <div className="bg-gray-800 animate-pulse h-full w-full"></div> : null
+  loading: ({ isLoading }) => {
+    return isLoading ? <div className="bg-gray-800 animate-pulse h-full w-full rounded-md"></div> : null
   },
 })
 
@@ -46,137 +46,8 @@ interface Project {
   featured?: boolean
 }
 
-// Project data with enhanced details
-const projects: Project[] = [
-  {
-    id: "triadic-marketing",
-    title: "Triadic Marketing Media Website",
-    description:
-      "Designed and developed a modern, responsive website for Triadic Marketing Media, a digital marketing agency that helps brands grow through strategic marketing solutions. The site features a clean, professional design with smooth animations, interactive elements, and optimized performance for all devices.",
-    image: "/triadic-marketing.png",
-    tags: ["Next.js", "React", "Tailwind CSS", "Responsive Design", "SEO"],
-    github: "#",
-    demo: "https://triadicmarketing.com/",
-    category: "professional",
-    date: "2023 - Present",
-    featured: true,
-  },
-  {
-    id: "saleha-khan",
-    title: "Saleha Khan Healer Website",
-    description:
-      "Developed a session booking website for healer and therapist Saleha Khan, featuring an integrated payment system and an admin dashboard for managing appointments. The site provides a serene, user-friendly interface that reflects her healing practice.",
-    image: "/saleha.png",
-    tags: ["React", "Payment Integration", "Admin Dashboard", "Booking System", "Responsive Design"],
-    github: "#",
-    demo: "https://www.salehakhanhealer.com/",
-    category: "professional",
-    date: "2023 - Present",
-    featured: true,
-  },
-  {
-    id: "h2h-courses",
-    title: "H2H Courses - Relationship Learning Platform",
-    description:
-      "A fully functional online learning platform developed for Heart2Heart, offering users a seamless way to explore, purchase, and access digital relationship courses. Implemented Firebase authentication, Stripe payment integration, and dynamic content access control with a user dashboard for course management.",
-    image: "/heart2heart.png",
-    tags: ["Firebase", "Stripe", "React", "Firestore", "Authentication"],
-    github: "#",
-    demo: "http://h2hcourses.com",
-    category: "professional",
-    featured: true,
-  },
-  {
-    id: "kingsmen-portfolio",
-    title: "Anees Kingsmen Portfolio",
-    description:
-      "Designed and developed a sleek, luxury-themed portfolio website for Anees Antapur, the CEO of Kingsmen Real Estate, one of the most successful real estate companies in UAE. The site features elegant animations, responsive design, and a sophisticated black and gold color scheme that reflects the premium brand identity.",
-    image: "/kings-men.png",
-    tags: ["Next.js", "Tailwind CSS", "Framer Motion", "Responsive Design", "Luxury Branding"],
-    github: "#",
-    demo: "https://aneeskingsmen.com/",
-    category: "professional",
-    featured: true,
-  },
-  {
-    id: "anime-streaming",
-    title: "OtakuStream - Anime Streaming App",
-    description:
-      "Developed a feature-rich anime streaming application that allows users to browse, search, and watch their favorite anime series. Implemented user authentication, favorites list, and watch history tracking with a clean, intuitive interface designed for anime enthusiasts.",
-    image: "/anime-streaming-app.png",
-    tags: ["React Native", "Firebase", "API Integration", "Mobile Development", "UI/UX Design"],
-    github: "#",
-    demo: "#",
-    category: "academic",
-    date: "Feb 2024 - Apr 2024",
-    institution: "Bahria University",
-    hideButtons: true,
-  },
-  {
-    id: "fake-news-detector",
-    title: "Fake News Detector in Python",
-    description:
-      "Developed an AI-powered agent using NLP models and datasets to analyze specific phrases and linguistic patterns, determining whether an article is real or fake. This project leveraged advanced Natural Language Processing techniques to enhance accuracy in misinformation detection.",
-    image: "/ai-fake-news-detection.png",
-    tags: ["Python", "NLP", "Machine Learning", "Artificial Neural Networks", "Classification"],
-    github: "#",
-    demo: "#",
-    category: "academic",
-    date: "Nov 2024 - Jan 2025",
-    institution: "Bahria University",
-    hideButtons: true,
-  },
-  {
-    id: "srs-document",
-    title: "SRS Document on Google Chrome",
-    description:
-      "Developed a comprehensive Software Requirements Specification (SRS) document for Google Chrome enhancements. Covered aspects like user classes, product functions, external interfaces, and nonfunctional requirements. Enhanced skills in requirement analysis and documentation.",
-    image: "/srs-document-abstract.png",
-    tags: ["Requirements Analysis", "UML", "Data-flow Diagrams", "Activity Diagrams", "ERD"],
-    github: "#",
-    demo: "#",
-    category: "academic",
-    date: "May 2024 - Jun 2024",
-    institution: "Bahria University",
-    hideButtons: true,
-  },
-  {
-    id: "vulnerability-assessment",
-    title: "Nessus Vulnerability Assessment",
-    description:
-      "Utilized the Nessus Vulnerability Scanner to assess security vulnerabilities on our university's website and Yahoo. Analyzed scan results, prioritized critical issues, and provided actionable recommendations to enhance website security.",
-    image: "/cyber-threat-overview.png",
-    tags: ["Cybersecurity", "Vulnerability Assessment", "Security Analysis", "Nessus"],
-    github: "#",
-    demo: "#",
-    category: "academic",
-    date: "Apr 2024 - May 2024",
-    institution: "Bahria University",
-    hideButtons: true,
-  },
-  {
-    id: "image-gallery",
-    title: "CodeAlpha Image Gallery",
-    description:
-      "A responsive image gallery built with HTML, CSS, and JavaScript. It features a seamless design that adjusts across all devices, allowing users to zoom in on images for detailed viewing. The gallery includes smooth transitions and a user-friendly interface.",
-    image: "/image-gallery-project.png",
-    tags: ["HTML", "CSS", "JavaScript", "Responsive Design"],
-    github: "https://github.com/Dark-Clover/CodeAlpha_Image_Gallery",
-    demo: "#",
-    category: "personal",
-  },
-  {
-    id: "music-player",
-    title: "Music Player",
-    description:
-      "Personal Portfolio and Music Player project that includes a simple music player. The portfolio showcases personal information, skills, projects, and contact details, while the integrated music player allows visitors to enjoy music while browsing.",
-    image: "/music-player-project.png",
-    tags: ["JavaScript", "HTML", "CSS", "Audio API"],
-    github: "https://github.com/Dark-Clover/Music-Player",
-    demo: "#",
-    category: "personal",
-  },
-]
+// Project data - moved to a separate file to reduce component size
+import { projects } from "@/data/projects"
 
 // Featured Project Slider component - Memoized for performance
 const FeaturedProjectSlider = memo(
@@ -193,6 +64,8 @@ const FeaturedProjectSlider = memo(
     const isMobile = useMediaQuery("(max-width: 768px)")
     const autoplayRef = useRef<NodeJS.Timeout | null>(null)
     const [isImageLoaded, setIsImageLoaded] = useState(false)
+    const touchStartX = useRef<number>(0)
+    const touchEndX = useRef<number>(0)
 
     const goToNext = useCallback(() => {
       if (isAnimating) return
@@ -242,11 +115,47 @@ const FeaturedProjectSlider = memo(
       }
     }, [goToNext])
 
+    // Touch handlers for mobile swipe
+    const handleTouchStart = useCallback((e: React.TouchEvent) => {
+      touchStartX.current = e.touches[0].clientX
+    }, [])
+
+    const handleTouchMove = useCallback((e: React.TouchEvent) => {
+      touchEndX.current = e.touches[0].clientX
+    }, [])
+
+    const handleTouchEnd = useCallback(() => {
+      const diff = touchStartX.current - touchEndX.current
+      const threshold = 50 // Minimum swipe distance
+
+      if (diff > threshold) {
+        // Swipe left, go next
+        goToNext()
+      } else if (diff < -threshold) {
+        // Swipe right, go prev
+        goToPrev()
+      }
+    }, [goToNext, goToPrev])
+
     // Preload next image for smoother transitions
     useEffect(() => {
-      const nextIndex = currentIndex === featuredProjects.length - 1 ? 0 : currentIndex + 1
-      const nextImage = new Image()
-      nextImage.src = featuredProjects[nextIndex].image
+      if (typeof window === "undefined") return
+
+      // Only preload in idle time
+      if ("requestIdleCallback" in window) {
+        ;(window as any).requestIdleCallback(() => {
+          const nextIndex = currentIndex === featuredProjects.length - 1 ? 0 : currentIndex + 1
+          const img = new Image()
+          img.src = featuredProjects[nextIndex].image
+        })
+      } else {
+        // Fallback for browsers that don't support requestIdleCallback
+        setTimeout(() => {
+          const nextIndex = currentIndex === featuredProjects.length - 1 ? 0 : currentIndex + 1
+          const img = new Image()
+          img.src = featuredProjects[nextIndex].image
+        }, 1000)
+      }
     }, [currentIndex, featuredProjects])
 
     const currentProject = featuredProjects[currentIndex]
@@ -256,6 +165,9 @@ const FeaturedProjectSlider = memo(
         className="relative w-full h-[500px] md:h-[600px] overflow-hidden rounded-xl bg-black/20 backdrop-blur-sm border border-emerald-500/20"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {/* Background image with parallax effect */}
         <div className="absolute inset-0 z-0">
@@ -268,7 +180,7 @@ const FeaturedProjectSlider = memo(
               transition={{ duration: 0.5 }}
               className="h-full w-full"
             >
-              <OptimizedImage
+              <PerformanceImage
                 src={currentProject.image}
                 alt={currentProject.title}
                 fill
@@ -386,9 +298,11 @@ const ProjectCard = memo(
   ({
     project,
     onViewProject,
+    index,
   }: {
     project: Project
     onViewProject: (project: Project) => void
+    index: number
   }) => {
     const [isHovered, setIsHovered] = useState(false)
     const [cardRef, cardInView] = useInView({
@@ -421,12 +335,15 @@ const ProjectCard = memo(
 
     const categoryStyles = getCategoryStyles()
 
+    // Staggered animation delay based on index
+    const animationDelay = index * 0.1
+
     return (
       <motion.div
         ref={cardRef}
         initial={{ opacity: 0, y: 20 }}
         animate={cardInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.5, delay: animationDelay }}
         className="h-full will-change-transform"
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
@@ -442,14 +359,8 @@ const ProjectCard = memo(
         >
           {/* Image container */}
           <div className="relative h-48 overflow-hidden">
-            {!isImageLoaded && (
-              <div className="absolute inset-0 bg-gray-800 animate-pulse flex items-center justify-center">
-                <div className="w-8 h-8 border-4 border-emerald-500/40 border-t-emerald-500 rounded-full animate-spin"></div>
-              </div>
-            )}
-
             {cardInView && (
-              <OptimizedImage
+              <PerformanceImage
                 src={project.image}
                 alt={project.title}
                 fill
@@ -556,7 +467,7 @@ const ProjectCard = memo(
 ProjectCard.displayName = "ProjectCard"
 
 // Main ProjectShowcase component
-export default function ProjectShowcase() {
+function ProjectShowcase() {
   const [ref, inView] = useInView({
     triggerOnce: false,
     threshold: 0.1,
@@ -564,6 +475,7 @@ export default function ProjectShowcase() {
 
   const [activeCategory, setActiveCategory] = useState<string>("all")
   const isMobile = useMediaQuery("(max-width: 640px)")
+  const [isLoading, setIsLoading] = useState(true)
 
   // Filter projects by category
   const filteredProjects = useMemo(() => {
@@ -584,30 +496,44 @@ export default function ProjectShowcase() {
     window.open(project.demo, "_blank")
   }, [])
 
+  // Simulate loading state for better UX
+  useEffect(() => {
+    setIsLoading(true)
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [activeCategory])
+
   // Preload images for better performance
   useEffect(() => {
+    if (typeof window === "undefined") return
+
+    // Use requestIdleCallback for non-critical preloading
     const preloadImages = () => {
       // Preload featured project images first
       const featuredProjects = projects.filter((p) => p.featured)
-      featuredProjects.forEach((project) => {
-        const img = new Image()
-        img.src = project.image
-      })
 
-      // Then preload other images based on active category
-      setTimeout(() => {
-        const projectsToPreload =
-          activeCategory === "all" ? projects.filter((p) => !p.featured).slice(0, 3) : filteredProjects.slice(0, 3)
-
-        projectsToPreload.forEach((project) => {
-          const img = new Image()
-          img.src = project.image
+      if ("requestIdleCallback" in window) {
+        ;(window as any).requestIdleCallback(() => {
+          featuredProjects.forEach((project) => {
+            const img = new Image()
+            img.src = project.image
+          })
         })
-      }, 1000)
+      } else {
+        // Fallback
+        setTimeout(() => {
+          featuredProjects.forEach((project) => {
+            const img = new Image()
+            img.src = project.image
+          })
+        }, 1000)
+      }
     }
 
     preloadImages()
-  }, [activeCategory, filteredProjects])
+  }, [])
 
   return (
     <section id="projects" className="section-container">
@@ -696,7 +622,23 @@ export default function ProjectShowcase() {
 
         {/* Project Grid - show based on active category */}
         <AnimatePresence mode="wait">
-          {activeCategory === "all" ? (
+          {isLoading ? (
+            <motion.div
+              key="loading-grid"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="h-[400px] bg-gray-800/40 rounded-lg animate-pulse"
+                  style={{ animationDelay: `${i * 0.1}s` }}
+                ></div>
+              ))}
+            </motion.div>
+          ) : activeCategory === "all" ? (
             // Show all projects organized by category
             <motion.div
               key="all-projects"
@@ -714,8 +656,8 @@ export default function ProjectShowcase() {
                     <h3 className="text-2xl font-bold text-white">Professional Projects</h3>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {groupedProjects.professional.map((project) => (
-                      <ProjectCard key={project.id} project={project} onViewProject={handleViewProject} />
+                    {groupedProjects.professional.map((project, index) => (
+                      <ProjectCard key={project.id} project={project} onViewProject={handleViewProject} index={index} />
                     ))}
                   </div>
                 </div>
@@ -729,8 +671,8 @@ export default function ProjectShowcase() {
                     <h3 className="text-2xl font-bold text-white">Academic Projects</h3>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {groupedProjects.academic.map((project) => (
-                      <ProjectCard key={project.id} project={project} onViewProject={handleViewProject} />
+                    {groupedProjects.academic.map((project, index) => (
+                      <ProjectCard key={project.id} project={project} onViewProject={handleViewProject} index={index} />
                     ))}
                   </div>
                 </div>
@@ -744,8 +686,8 @@ export default function ProjectShowcase() {
                     <h3 className="text-2xl font-bold text-white">Personal Projects</h3>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {groupedProjects.personal.map((project) => (
-                      <ProjectCard key={project.id} project={project} onViewProject={handleViewProject} />
+                    {groupedProjects.personal.map((project, index) => (
+                      <ProjectCard key={project.id} project={project} onViewProject={handleViewProject} index={index} />
                     ))}
                   </div>
                 </div>
@@ -763,8 +705,8 @@ export default function ProjectShowcase() {
             >
               {filteredProjects
                 .filter((p) => !(activeCategory === "professional" && p.featured)) // Don't show featured projects twice in professional category
-                .map((project) => (
-                  <ProjectCard key={project.id} project={project} onViewProject={handleViewProject} />
+                .map((project, index) => (
+                  <ProjectCard key={project.id} project={project} onViewProject={handleViewProject} index={index} />
                 ))}
             </motion.div>
           )}
@@ -773,3 +715,5 @@ export default function ProjectShowcase() {
     </section>
   )
 }
+
+export default memo(ProjectShowcase)

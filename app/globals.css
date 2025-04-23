@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Define CSS variables */
 @layer base {
   :root {
     --background: 240 10% 3.9%;
@@ -27,6 +28,7 @@
   }
 }
 
+/* Base styles */
 @layer base {
   * {
     @apply border-border;
@@ -35,19 +37,22 @@
     @apply bg-background text-foreground;
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
       "Helvetica Neue", sans-serif;
-    scroll-behavior: smooth;
-    transition: background-color 0.3s ease, color 0.3s ease;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
+  /* Use JS for smooth scrolling instead of CSS for better performance */
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
   }
 
+  /* Reduce transition properties for better performance */
   * {
-    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
   }
 }
 
@@ -61,11 +66,11 @@
     radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0, 0, 0, 0));
   background-repeat: repeat;
   background-size: 200px 200px;
-  animation: stars-animation 200s linear infinite;
-  opacity: 0.2;
-  will-change: background-position;
+  animation: stars-animation 300s linear infinite;
+  opacity: 0.15;
   transform: translateZ(0);
   backface-visibility: hidden;
+  pointer-events: none;
 }
 
 @keyframes stars-animation {
@@ -77,11 +82,13 @@
   }
 }
 
+/* Gradient text effect */
 .gradient-text {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-600;
   background-size: 100%;
 }
 
+/* Section heading styles */
 .section-heading {
   @apply text-3xl md:text-4xl font-bold mb-8 gradient-text;
   position: relative;
@@ -100,31 +107,35 @@
   border-radius: 3px;
 }
 
+/* Section container */
 .section-container {
   @apply py-16 md:py-24 relative;
   contain: content;
 }
 
+/* Card hover effect */
 .card-hover {
   @apply transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/20;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
+/* Custom scrollbar - only apply on desktop */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
 
-::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.3);
-}
+  ::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.3);
+  }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.5);
-  border-radius: 4px;
-}
+  ::-webkit-scrollbar-thumb {
+    background: rgba(16, 185, 129, 0.5);
+    border-radius: 4px;
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(16, 185, 129, 0.8);
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(16, 185, 129, 0.8);
+  }
 }
 
 /* Responsive improvements */
@@ -138,7 +149,7 @@
   }
 }
 
-/* Animation classes */
+/* Animation classes - optimized for performance */
 .hover-lift {
   transition: transform 0.3s ease;
   will-change: transform;
@@ -148,7 +159,7 @@
   transform: translateY(-5px);
 }
 
-/* Terminal cursor animation */
+/* Terminal cursor animation - optimized */
 @keyframes blink {
   0%,
   100% {
@@ -195,20 +206,9 @@
   }
 }
 
+/* Transition utilities */
 .smooth-transition {
   transition: all 0.3s ease;
-}
-
-/* Optimize animations */
-.smooth-scroll {
-  will-change: opacity;
-}
-
-/* Optimize performance */
-.optimize-gpu {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000px;
 }
 
 /* Performance optimizations */
@@ -226,20 +226,30 @@
   contain-intrinsic-size: 0 500px;
 }
 
-/* Project card hover effects */
+/* Shimmer loading effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Project card hover effects - optimized */
 .project-card-hover {
-  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   will-change: transform, box-shadow;
 }
 
 .project-card-hover:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.1), 0 10px 10px -5px rgba(16, 185, 129, 0.04);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 20px -5px rgba(16, 185, 129, 0.1), 0 10px 10px -5px rgba(16, 185, 129, 0.04);
 }
 
-/* Image hover effects */
+/* Image hover effects - optimized */
 .image-hover {
-  transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), filter 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), filter 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   will-change: transform, filter;
 }
 
