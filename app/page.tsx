@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef, Suspense } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Toaster } from "@/components/ui/toaster"
-import Head from "next/head"
 import dynamic from "next/dynamic"
 
 // Import lightweight components directly
@@ -132,13 +131,17 @@ export default function Home() {
     if (typeof window !== "undefined" && process.env.NODE_ENV === "production") {
       // Report web vitals
       const reportWebVitals = async () => {
-        const { getCLS, getFID, getLCP, getFCP, getTTFB } = await import("web-vitals")
+        try {
+          const { getCLS, getFID, getLCP, getFCP, getTTFB } = await import("web-vitals")
 
-        getCLS(console.log)
-        getFID(console.log)
-        getLCP(console.log)
-        getFCP(console.log)
-        getTTFB(console.log)
+          getCLS(console.log)
+          getFID(console.log)
+          getLCP(console.log)
+          getFCP(console.log)
+          getTTFB(console.log)
+        } catch (error) {
+          console.error("Failed to load web-vitals", error)
+        }
       }
 
       reportWebVitals()
@@ -163,130 +166,144 @@ export default function Home() {
   }, [isHydrated])
 
   // Add resource hints for better performance
-  const resourceHints = (
-    <Head>
-      {/* DNS prefetch for external resources */}
-      <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-      <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  useEffect(() => {
+    if (typeof document === "undefined") return
 
-      {/* Preconnect to critical domains */}
-      <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+    // DNS prefetch for external resources
+    const dnsPrefetch = (url: string) => {
+      const link = document.createElement("link")
+      link.rel = "dns-prefetch"
+      link.href = url
+      document.head.appendChild(link)
+    }
 
-      {/* Preload critical assets */}
-      <link rel="preload" href="/profile-image.png" as="image" />
+    // Preconnect to critical domains
+    const preconnect = (url: string, crossOrigin?: string) => {
+      const link = document.createElement("link")
+      link.rel = "preconnect"
+      link.href = url
+      if (crossOrigin) link.crossOrigin = crossOrigin
+      document.head.appendChild(link)
+    }
 
-      {/* Preload critical fonts */}
-      <link
-        rel="preload"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-        as="style"
-      />
-    </Head>
-  )
+    // Preload critical assets
+    const preload = (url: string, as: string) => {
+      const link = document.createElement("link")
+      link.rel = "preload"
+      link.href = url
+      link.as = as
+      document.head.appendChild(link)
+    }
+
+    // Add resource hints
+    dnsPrefetch("https://fonts.googleapis.com")
+    dnsPrefetch("https://fonts.gstatic.com")
+
+    preconnect("https://fonts.googleapis.com", "anonymous")
+    preconnect("https://fonts.gstatic.com", "anonymous")
+
+    preload("/profile-image.png", "image")
+  }, [])
 
   return (
-    <>
-      {resourceHints}
-      <main className="min-h-screen bg-gradient-to-b from-background to-background/90 overflow-hidden">
-        <div className="stars-container fixed inset-0 z-0 opacity-20" />
+    <main className="min-h-screen bg-gradient-to-b from-background to-background/90 overflow-hidden">
+      <div className="stars-container fixed inset-0 z-0 opacity-20" />
 
-        {/* Only load particles if enabled and page is fully loaded */}
-        {isHydrated && isParticlesEnabled && !isLoading && <OptimizedParticles />}
+      {/* Only load particles if enabled and page is fully loaded */}
+      {isHydrated && isParticlesEnabled && !isLoading && <OptimizedParticles />}
 
-        <AnimatePresence mode="wait">
-          {isLoading ? (
-            <motion.div
-              key="loader"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="h-screen w-screen flex flex-col items-center justify-center bg-black"
-            >
-              <div className="w-full max-w-md p-4 bg-gray-900 rounded-md border border-gray-800 shadow-lg">
-                <div className="flex items-center mb-2 border-b border-gray-700 pb-2">
-                  <div className="flex space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  </div>
-                  <div className="text-gray-400 text-xs mx-auto">building</div>
+      <AnimatePresence mode="wait">
+        {isLoading ? (
+          <motion.div
+            key="loader"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="h-screen w-screen flex flex-col items-center justify-center bg-black"
+          >
+            <div className="w-full max-w-md p-4 bg-gray-900 rounded-md border border-gray-800 shadow-lg">
+              <div className="flex items-center mb-2 border-b border-gray-700 pb-2">
+                <div className="flex space-x-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
                 </div>
-                <div className="font-mono text-sm text-emerald-500 mb-4">
-                  <TerminalText text="npm run build" typingSpeed={30} className="mb-2" />
+                <div className="text-gray-400 text-xs mx-auto">building</div>
+              </div>
+              <div className="font-mono text-sm text-emerald-500 mb-4">
+                <TerminalText text="npm run build" typingSpeed={30} className="mb-2" />
+                <TerminalText
+                  text="Creating an optimized production build..."
+                  typingSpeed={15}
+                  startDelay={300}
+                  className="mb-2"
+                />
+                <TerminalText text="Compiling..." typingSpeed={15} startDelay={600} className="mb-2" />
+                <TerminalText
+                  text="✓ Compiled successfully"
+                  typingSpeed={15}
+                  startDelay={900}
+                  className="text-white mb-2"
+                />
+                {resourcesLoaded && (
                   <TerminalText
-                    text="Creating an optimized production build..."
+                    text="✓ Ready for deployment!"
                     typingSpeed={15}
                     startDelay={300}
-                    className="mb-2"
+                    className="text-green-400"
                   />
-                  <TerminalText text="Compiling..." typingSpeed={15} startDelay={600} className="mb-2" />
-                  <TerminalText
-                    text="✓ Compiled successfully"
-                    typingSpeed={15}
-                    startDelay={900}
-                    className="text-white mb-2"
-                  />
-                  {resourcesLoaded && (
-                    <TerminalText
-                      text="✓ Ready for deployment!"
-                      typingSpeed={15}
-                      startDelay={300}
-                      className="text-green-400"
-                    />
-                  )}
-                </div>
-                <div className="flex justify-center">
-                  <GlitchText className="text-xl font-bold text-emerald-500" enableOnHover={false} speed={0.5}>
-                    USMAN ARSHAD
-                  </GlitchText>
-                </div>
+                )}
               </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="content"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              ref={sectionsRef}
-              className="smooth-scroll"
-            >
-              <Navbar />
-              <div className="container mx-auto px-4">
-                {/* Load hero section immediately */}
-                <Suspense fallback={<SectionSkeleton />}>
-                  <Hero />
-                </Suspense>
-
-                {/* Load other sections with progressive enhancement */}
-                <Suspense fallback={<SectionSkeleton />}>
-                  <About />
-                </Suspense>
-
-                <Suspense fallback={<SectionSkeleton />}>
-                  <ProjectShowcase />
-                </Suspense>
-
-                <Suspense fallback={<SectionSkeleton />}>
-                  <Resume />
-                </Suspense>
-
-                <Suspense fallback={<SectionSkeleton />}>
-                  <Contact />
-                </Suspense>
-
-                <Suspense fallback={<SectionSkeleton />}>
-                  <Footer />
-                </Suspense>
+              <div className="flex justify-center">
+                <GlitchText className="text-xl font-bold text-emerald-500" enableOnHover={false} speed={0.5}>
+                  USMAN ARSHAD
+                </GlitchText>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="content"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            ref={sectionsRef}
+            className="smooth-scroll"
+          >
+            <Navbar />
+            <div className="container mx-auto px-4">
+              {/* Load hero section immediately */}
+              <Suspense fallback={<SectionSkeleton />}>
+                <Hero />
+              </Suspense>
 
-        <Toaster />
-      </main>
-    </>
+              {/* Load other sections with progressive enhancement */}
+              <Suspense fallback={<SectionSkeleton />}>
+                <About />
+              </Suspense>
+
+              <Suspense fallback={<SectionSkeleton />}>
+                <ProjectShowcase />
+              </Suspense>
+
+              <Suspense fallback={<SectionSkeleton />}>
+                <Resume />
+              </Suspense>
+
+              <Suspense fallback={<SectionSkeleton />}>
+                <Contact />
+              </Suspense>
+
+              <Suspense fallback={<SectionSkeleton />}>
+                <Footer />
+              </Suspense>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <Toaster />
+    </main>
   )
 }

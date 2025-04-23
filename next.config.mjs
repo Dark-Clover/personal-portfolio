@@ -16,8 +16,7 @@ const nextConfig = {
   },
   // Performance optimizations
   experimental: {
-    // Enable modern optimizations
-    optimizeCss: true, // Optimize CSS
+    // Remove optimizeCss which requires critters
     optimizePackageImports: ['framer-motion', 'lucide-react', 'three', 'gsap'],
     // Improve memory usage
     memoryBasedWorkersCount: true,
@@ -25,8 +24,6 @@ const nextConfig = {
     turbotrace: {
       logLevel: 'error',
     },
-    serverComponents: false,
-    concurrentFeatures: false,
   },
   // Improve build performance
   compiler: {

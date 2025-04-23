@@ -3,9 +3,6 @@ import type { Metadata } from "next"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 
-// Remove the next/font import and use system fonts instead
-// This avoids the SWC/Babel conflict
-
 export const metadata: Metadata = {
   title: "Usman Arshad | Developer Portfolio",
   description: "Full-stack developer specializing in web and mobile applications",
