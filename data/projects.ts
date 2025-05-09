@@ -17,6 +17,19 @@ export interface Project {
 // Project data with enhanced details
 export const projects: Project[] = [
   {
+    id: "clad-creative",
+    title: "CladCreative - Media & Marketing Agency",
+    description:
+      "Designed and developed a modern website for CladCreative, a media and marketing agency based in Ireland. The site features a sleek dark theme with orange accents, smooth animations, and a responsive design that showcases their services, portfolio, and packages with an elegant user interface.",
+    image: "/clad-creative.png",
+    tags: ["Next.js", "React", "Tailwind CSS", "Framer Motion", "Responsive Design"],
+    github: "#",
+    demo: "https://www.cladcreative.com/",
+    category: "professional",
+    date: "2024",
+    featured: true,
+  },
+  {
     id: "triadic-marketing",
     title: "Triadic Marketing Media Website",
     description:
