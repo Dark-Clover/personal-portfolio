@@ -16,7 +16,7 @@ function Hero() {
   // Track mouse position for subtle parallax effect with throttling
   useEffect(() => {
     let lastUpdate = 0
-    const throttleMs = 100 // Increase throttle time for better performance
+    const throttleMs = 50 // Only update every 50ms
 
     const handleMouseMove = (e: MouseEvent) => {
       const now = Date.now()
@@ -45,24 +45,24 @@ function Hero() {
 
   return (
     <section id="home" className="min-h-screen flex flex-col justify-center items-center relative pt-16">
-      {/* Animated background elements - simplified for better performance */}
+      {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl"
           animate={{
-            x: mousePosition.x * -10, // Reduced movement
-            y: mousePosition.y * -10,
+            x: mousePosition.x * -20,
+            y: mousePosition.y * -20,
           }}
-          transition={{ type: "spring", damping: 15, stiffness: 50 }} // Reduced stiffness
+          transition={{ type: "spring", damping: 15, stiffness: 100 }}
           style={{ willChange: "transform" }}
         />
         <motion.div
           className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-emerald-500/5 blur-3xl"
           animate={{
-            x: mousePosition.x * 10, // Reduced movement
-            y: mousePosition.y * 10,
+            x: mousePosition.x * 20,
+            y: mousePosition.y * 20,
           }}
-          transition={{ type: "spring", damping: 15, stiffness: 50 }} // Reduced stiffness
+          transition={{ type: "spring", damping: 15, stiffness: 100 }}
           style={{ willChange: "transform" }}
         />
       </div>
@@ -154,8 +154,9 @@ function Hero() {
                 whileHover={{
                   scale: 1.05,
                   backgroundColor: "rgba(39, 39, 42, 0.8)",
+                  boxShadow: "0 0 15px rgba(16, 185, 129, 0.5)",
                 }}
-                transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
                 {item.icon}
                 <span>{item.text}</span>
@@ -167,7 +168,7 @@ function Hero() {
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
               className="relative group"
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
@@ -183,7 +184,7 @@ function Hero() {
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
               className="relative group"
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-gray-600 to-gray-700 rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>

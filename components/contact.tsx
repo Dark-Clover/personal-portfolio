@@ -11,9 +11,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 import { Mail, Phone, Linkedin, Instagram, Github } from "lucide-react"
+import ShapeBlur from "./shape-blur"
 import { useMediaQuery } from "@/hooks/use-media-query"
-
-// Remove ShapeBlur import
 
 export default function Contact() {
   const { toast } = useToast()
@@ -71,8 +70,18 @@ export default function Contact() {
 
   return (
     <section id="contact" className="section-container relative">
-      {/* Replace ShapeBlur with a simpler gradient background */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-emerald-900/10 to-transparent opacity-30 pointer-events-none"></div>
+      {/* ShapeBlur effect positioned behind the contact section */}
+      <div className="absolute inset-0 z-0 opacity-30 pointer-events-none">
+        <ShapeBlur
+          className="w-full h-full"
+          variation={0}
+          shapeSize={1.5}
+          roundness={0.3}
+          borderSize={0.03}
+          circleSize={0.4}
+          circleEdge={0.6}
+        />
+      </div>
 
       <motion.div
         ref={ref}

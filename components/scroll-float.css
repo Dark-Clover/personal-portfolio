@@ -1,0 +1,17 @@
+.scroll-float {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.scroll-float-text {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.char {
+  display: inline-block;
+  will-change: transform;
+  transform-origin: 50% 0%;
+}

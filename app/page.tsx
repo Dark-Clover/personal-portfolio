@@ -66,6 +66,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [isParticlesEnabled, setIsParticlesEnabled] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
+  const [resourcesLoaded, setResourcesLoaded] = useState(false)
   const sectionsRef = useRef<HTMLDivElement>(null)
 
   // Handle client-side hydration
@@ -87,6 +88,9 @@ export default function Home() {
       // Only enable particles for high-end devices
       setIsParticlesEnabled(isHighEndDevice)
     }
+
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+    const isLowPower = window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
     checkDevicePerformance()
 
@@ -113,6 +117,8 @@ export default function Home() {
         ...imagePromises,
       ])
 
+      setResourcesLoaded(true)
+
       // Slightly delay removing the loading screen for smoother transition
       setTimeout(() => {
         setIsLoading(false)
@@ -121,17 +127,34 @@ export default function Home() {
 
     preloadResources()
 
+    // Add performance monitoring
+    if (typeof window !== "undefined" && process.env.NODE_ENV === "production") {
+      // Report web vitals
+      const reportWebVitals = async () => {
+        try {
+          const { getCLS, getFID, getLCP, getFCP, getTTFB } = await import("web-vitals")
+
+          getCLS(console.log)
+          getFID(console.log)
+          getLCP(console.log)
+          getFCP(console.log)
+          getTTFB(console.log)
+        } catch (error) {
+          console.error("Failed to load web-vitals", error)
+        }
+      }
+
+      reportWebVitals()
+    }
+
     // Add event listener for performance issues
     const handleVisibilityChange = () => {
       if (document.visibilityState === "hidden") {
         // Page is hidden, can pause heavy animations
         setIsParticlesEnabled(false)
-      } else {
+      } else if (!isLowPower && !isMobile && window.innerWidth > 768) {
         // Page is visible again, resume animations if device is capable
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-        const isLowPower = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        const isHighEndDevice = !isMobile && !isLowPower && window.innerWidth > 768
-        setIsParticlesEnabled(isHighEndDevice)
+        setIsParticlesEnabled(true)
       }
     }
 
@@ -141,6 +164,46 @@ export default function Home() {
       document.removeEventListener("visibilitychange", handleVisibilityChange)
     }
   }, [isHydrated])
+
+  // Add resource hints for better performance
+  useEffect(() => {
+    if (typeof document === "undefined") return
+
+    // DNS prefetch for external resources
+    const dnsPrefetch = (url: string) => {
+      const link = document.createElement("link")
+      link.rel = "dns-prefetch"
+      link.href = url
+      document.head.appendChild(link)
+    }
+
+    // Preconnect to critical domains
+    const preconnect = (url: string, crossOrigin?: string) => {
+      const link = document.createElement("link")
+      link.rel = "preconnect"
+      link.href = url
+      if (crossOrigin) link.crossOrigin = crossOrigin
+      document.head.appendChild(link)
+    }
+
+    // Preload critical assets
+    const preload = (url: string, as: string) => {
+      const link = document.createElement("link")
+      link.rel = "preload"
+      link.href = url
+      link.as = as
+      document.head.appendChild(link)
+    }
+
+    // Add resource hints
+    dnsPrefetch("https://fonts.googleapis.com")
+    dnsPrefetch("https://fonts.gstatic.com")
+
+    preconnect("https://fonts.googleapis.com", "anonymous")
+    preconnect("https://fonts.gstatic.com", "anonymous")
+
+    preload("/profile-image-new.png", "image")
+  }, [])
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-background/90 overflow-hidden">
@@ -183,12 +246,14 @@ export default function Home() {
                   startDelay={900}
                   className="text-white mb-2"
                 />
-                <TerminalText
-                  text="✓ Ready for deployment!"
-                  typingSpeed={15}
-                  startDelay={300}
-                  className="text-green-400"
-                />
+                {resourcesLoaded && (
+                  <TerminalText
+                    text="✓ Ready for deployment!"
+                    typingSpeed={15}
+                    startDelay={300}
+                    className="text-green-400"
+                  />
+                )}
               </div>
               <div className="flex justify-center">
                 <GlitchText className="text-xl font-bold text-emerald-500" enableOnHover={false} speed={0.5}>

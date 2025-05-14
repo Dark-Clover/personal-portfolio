@@ -12,54 +12,44 @@ interface Particle {
   color: string
 }
 
-function OptimizedParticles() {
+function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { theme } = useTheme()
   const [isVisible, setIsVisible] = useState(true)
   const particlesRef = useRef<Particle[]>([])
   const animationRef = useRef<number>()
   const lastTimeRef = useRef<number>(0)
-  const frameCountRef = useRef<number>(0)
-  const isInitializedRef = useRef<boolean>(false)
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const ctx = canvas.getContext("2d", {
-      alpha: true,
-      desynchronized: true,
-      willReadFrequently: false,
-    })
+    const ctx = canvas.getContext("2d", { alpha: true, desynchronized: true })
     if (!ctx) return
 
-    // Set canvas to full screen with lower resolution for better performance
+    // Set canvas to full screen
     const handleResize = () => {
-      // Use a fixed scale factor of 0.5 for better performance
-      const scale = 0.5
-      canvas.width = window.innerWidth * scale
-      canvas.height = window.innerHeight * scale
+      const dpr = 1 // Use a fixed DPR of 1 for better performance
+      canvas.width = window.innerWidth * dpr
+      canvas.height = window.innerHeight * dpr
       canvas.style.width = `${window.innerWidth}px`
       canvas.style.height = `${window.innerHeight}px`
-      ctx.scale(scale, scale)
+      ctx.scale(dpr, dpr)
 
-      // Only initialize particles if not already done
-      if (!isInitializedRef.current) {
-        initParticles()
-        isInitializedRef.current = true
-      }
+      // Recreate particles on resize to ensure proper distribution
+      initParticles()
     }
 
     // Create particles
     const initParticles = () => {
       // Adjust particle count based on screen size
       const width = window.innerWidth
-      let particleCount = 5 // Minimal particles for better performance
+      let particleCount = 8 // Further reduced for better performance
 
       if (width < 768) {
-        particleCount = 3 // Mobile
+        particleCount = 4 // Mobile
       } else if (width < 1024) {
-        particleCount = 4 // Tablet
+        particleCount = 6 // Tablet
       }
 
       particlesRef.current = []
@@ -68,9 +58,9 @@ function OptimizedParticles() {
         particlesRef.current.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          size: Math.random() * 1 + 0.5, // Even smaller particles
-          speedX: (Math.random() - 0.5) * 0.03, // Much slower movement
-          speedY: (Math.random() - 0.5) * 0.03,
+          size: Math.random() * 1.5 + 0.5, // Smaller particles
+          speedX: (Math.random() - 0.5) * 0.05, // Much slower movement
+          speedY: (Math.random() - 0.5) * 0.05,
           color: theme === "dark" ? "#10b981" : "#059669",
         })
       }
@@ -78,7 +68,7 @@ function OptimizedParticles() {
 
     // Connect particles with lines if they're close enough
     const connectParticles = () => {
-      const maxDistance = 60 // Reduced connection distance
+      const maxDistance = 80 // Reduced connection distance
 
       for (let i = 0; i < particlesRef.current.length; i++) {
         for (let j = i + 1; j < particlesRef.current.length; j++) {
@@ -90,7 +80,7 @@ function OptimizedParticles() {
             // Set opacity based on distance
             const opacity = 1 - distance / maxDistance
             ctx.strokeStyle =
-              theme === "dark" ? `rgba(16, 185, 129, ${opacity * 0.08})` : `rgba(5, 150, 105, ${opacity * 0.08})`
+              theme === "dark" ? `rgba(16, 185, 129, ${opacity * 0.1})` : `rgba(5, 150, 105, ${opacity * 0.1})`
             ctx.lineWidth = 0.5 // Thinner lines
             ctx.beginPath()
             ctx.moveTo(particlesRef.current[i].x, particlesRef.current[i].y)
@@ -108,8 +98,8 @@ function OptimizedParticles() {
         return
       }
 
-      // Throttle to 15fps for better performance
-      if (timestamp - lastTimeRef.current < 66) {
+      // Throttle to 30fps for better performance
+      if (timestamp - lastTimeRef.current < 33) {
         animationRef.current = requestAnimationFrame(animate)
         return
       }
@@ -118,47 +108,32 @@ function OptimizedParticles() {
       const deltaTime = timestamp - lastTimeRef.current
       lastTimeRef.current = timestamp
 
-      // Only clear and redraw every 2 frames for better performance
-      frameCountRef.current++
-      if (frameCountRef.current % 2 === 0) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-        // Update and draw particles
-        for (const particle of particlesRef.current) {
-          // Use delta time to make movement frame-rate independent
-          particle.x += particle.speedX * (deltaTime / 16)
-          particle.y += particle.speedY * (deltaTime / 16)
+      // Update and draw particles
+      for (const particle of particlesRef.current) {
+        // Use delta time to make movement frame-rate independent
+        particle.x += particle.speedX * (deltaTime / 16)
+        particle.y += particle.speedY * (deltaTime / 16)
 
-          // Bounce off edges
-          if (particle.x < 0 || particle.x > window.innerWidth) {
-            particle.speedX = -particle.speedX
-          }
-
-          if (particle.y < 0 || particle.y > window.innerHeight) {
-            particle.speedY = -particle.speedY
-          }
-
-          // Draw particle
-          ctx.fillStyle = particle.color
-          ctx.beginPath()
-          ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-          ctx.fill()
+        // Bounce off edges
+        if (particle.x < 0 || particle.x > window.innerWidth) {
+          particle.speedX = -particle.speedX
         }
 
-        connectParticles()
+        if (particle.y < 0 || particle.y > window.innerHeight) {
+          particle.speedY = -particle.speedY
+        }
+
+        // Draw particle
+        ctx.fillStyle = particle.color
+        ctx.beginPath()
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
+        ctx.fill()
       }
 
-      // Use requestIdleCallback if available, otherwise use requestAnimationFrame
-      if (typeof window.requestIdleCallback === "function") {
-        window.requestIdleCallback(
-          () => {
-            animationRef.current = requestAnimationFrame(animate)
-          },
-          { timeout: 100 },
-        )
-      } else {
-        animationRef.current = requestAnimationFrame(animate)
-      }
+      connectParticles()
+      animationRef.current = requestAnimationFrame(animate)
     }
 
     // Visibility observer to pause animation when not visible
@@ -175,19 +150,11 @@ function OptimizedParticles() {
       observer.observe(canvas)
     }
 
-    // Use passive event listener for better performance
     window.addEventListener("resize", handleResize, { passive: true })
     handleResize()
+    initParticles()
     lastTimeRef.current = performance.now()
-
-    // Start animation on next idle callback
-    if (typeof window.requestIdleCallback === "function") {
-      window.requestIdleCallback(() => {
-        animationRef.current = requestAnimationFrame(animate)
-      })
-    } else {
-      animationRef.current = requestAnimationFrame(animate)
-    }
+    animationRef.current = requestAnimationFrame(animate)
 
     return () => {
       window.removeEventListener("resize", handleResize)
@@ -198,7 +165,7 @@ function OptimizedParticles() {
     }
   }, [theme, isVisible])
 
-  return <canvas ref={canvasRef} className="fixed inset-0 z-0 opacity-15 pointer-events-none" aria-hidden="true" />
+  return <canvas ref={canvasRef} className="fixed inset-0 z-0 opacity-20 pointer-events-none will-change-transform" />
 }
 
-export default memo(OptimizedParticles)
+export default memo(ParticleBackground)

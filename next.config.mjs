@@ -16,9 +16,14 @@ const nextConfig = {
   },
   // Performance optimizations
   experimental: {
-    optimizePackageImports: ['framer-motion', 'lucide-react'],
+    // Remove optimizeCss which requires critters
+    optimizePackageImports: ['framer-motion', 'lucide-react', 'three', 'gsap'],
     // Improve memory usage
     memoryBasedWorkersCount: true,
+    // Improve bundle size
+    turbotrace: {
+      logLevel: 'error',
+    },
   },
   // Improve build performance
   compiler: {
