@@ -34,8 +34,6 @@ export default function Resume() {
     },
   }
 
-  // Add the experiences from About to the Resume component's experiences array
-
   // Update the experiences array to include the ones from About
   const experiences = [
     {
@@ -253,6 +251,22 @@ export default function Resume() {
                     className="relative pl-6 border-l-2 border-emerald-500/30"
                   >
                     <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-emerald-500"></div>
+                    <h3 className="text-lg font-semibold">Vercel Certified in Next.js</h3>
+                    <p className="text-sm text-foreground/70">Vercel</p>
+                    <p className="mt-2 text-sm">
+                      Certified in Next.js App Router, Pages Router, React Foundations, and SEO Fundamentals. This
+                      certification validates expertise in building modern web applications using Next.js and optimizing
+                      them for search engines.
+                    </p>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="relative pl-6 border-l-2 border-emerald-500/30 mt-6"
+                  >
+                    <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-emerald-500"></div>
                     <h3 className="text-lg font-semibold">Google IT Support Specialist</h3>
                     <p className="text-sm text-foreground/70">Google</p>
                     <p className="mt-2 text-sm">
@@ -264,7 +278,7 @@ export default function Resume() {
                   <motion.div
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
+                    transition={{ delay: 0.3 }}
                     className="relative pl-6 border-l-2 border-emerald-500/30 mt-6"
                   >
                     <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-emerald-500"></div>

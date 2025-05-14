@@ -73,10 +73,10 @@ function About() {
               <CardContent className="p-0">
                 <div className="relative h-[300px] md:h-[400px] w-full">
                   <OptimizedImage
-                    src="/profile-image.png"
+                    src="/profile-image-new.png"
                     alt="Usman Arshad"
                     fill
-                    className="object-cover rounded-md"
+                    className="object-contain rounded-md p-4" // Changed from object-cover to object-contain and added padding
                     priority
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />

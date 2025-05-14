@@ -70,29 +70,28 @@ function PerformanceImage({
     if (!imageRef.current || priority) return
 
     // Only observe if not using priority loading
-    observerRef.current = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && imageRef.current) {
-            // Preload the image when it's about to enter viewport
-            const img = new Image()
-            img.src = src
-            img.onload = () => {
-              if (imageRef.current) {
-                setImgSrc(src)
-              }
-            }
-            img.onerror = () => {
-              setHasError(true)
-              setImgSrc(fallbackSrc)
-            }
+        if (!entries || entries.length === 0) return
 
-            // Stop observing once triggered
-            if (observerRef.current) {
-              observerRef.current.disconnect()
+        const entry = entries[0]
+        if (entry && entry.isIntersecting && imageRef.current) {
+          // Preload the image when it's about to enter viewport
+          const img = new Image()
+          img.src = src
+          img.onload = () => {
+            if (imageRef.current) {
+              setImgSrc(src)
             }
           }
-        })
+          img.onerror = () => {
+            setHasError(true)
+            setImgSrc(fallbackSrc)
+          }
+
+          // Stop observing once triggered
+          observer.disconnect()
+        }
       },
       {
         rootMargin: "200px", // Start loading 200px before it enters viewport
@@ -100,12 +99,14 @@ function PerformanceImage({
       },
     )
 
-    observerRef.current.observe(imageRef.current)
+    observerRef.current = observer
+
+    if (imageRef.current) {
+      observer.observe(imageRef.current)
+    }
 
     return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect()
-      }
+      observer.disconnect()
     }
   }, [src, priority, fallbackSrc])
 

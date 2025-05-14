@@ -54,12 +54,12 @@ function OptimizedParticles() {
     const initParticles = () => {
       // Adjust particle count based on screen size
       const width = window.innerWidth
-      let particleCount = 5 // Minimal particles for better performance
+      let particleCount = 4 // Even fewer particles for better performance
 
       if (width < 768) {
-        particleCount = 3 // Mobile
+        particleCount = 2 // Mobile
       } else if (width < 1024) {
-        particleCount = 4 // Tablet
+        particleCount = 3 // Tablet
       }
 
       particlesRef.current = []
@@ -69,8 +69,8 @@ function OptimizedParticles() {
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           size: Math.random() * 1 + 0.5, // Even smaller particles
-          speedX: (Math.random() - 0.5) * 0.03, // Much slower movement
-          speedY: (Math.random() - 0.5) * 0.03,
+          speedX: (Math.random() - 0.5) * 0.02, // Even slower movement
+          speedY: (Math.random() - 0.5) * 0.02,
           color: theme === "dark" ? "#10b981" : "#059669",
         })
       }
@@ -78,7 +78,7 @@ function OptimizedParticles() {
 
     // Connect particles with lines if they're close enough
     const connectParticles = () => {
-      const maxDistance = 60 // Reduced connection distance
+      const maxDistance = 50 // Reduced connection distance
 
       for (let i = 0; i < particlesRef.current.length; i++) {
         for (let j = i + 1; j < particlesRef.current.length; j++) {
@@ -108,8 +108,8 @@ function OptimizedParticles() {
         return
       }
 
-      // Throttle to 15fps for better performance
-      if (timestamp - lastTimeRef.current < 66) {
+      // Throttle to 10fps for better performance
+      if (timestamp - lastTimeRef.current < 100) {
         animationRef.current = requestAnimationFrame(animate)
         return
       }
@@ -118,9 +118,9 @@ function OptimizedParticles() {
       const deltaTime = timestamp - lastTimeRef.current
       lastTimeRef.current = timestamp
 
-      // Only clear and redraw every 2 frames for better performance
+      // Only clear and redraw every 3 frames for better performance
       frameCountRef.current++
-      if (frameCountRef.current % 2 === 0) {
+      if (frameCountRef.current % 3 === 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
 
         // Update and draw particles
@@ -164,9 +164,9 @@ function OptimizedParticles() {
     // Visibility observer to pause animation when not visible
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          setIsVisible(entry.isIntersecting)
-        })
+        if (entries && entries.length > 0) {
+          setIsVisible(entries[0].isIntersecting)
+        }
       },
       { threshold: 0.1 },
     )

@@ -24,16 +24,21 @@ export default function ResumeDownloadButton({
   const handleDownload = () => {
     setIsDownloading(true)
 
-    // Create a direct link to the PDF file
-    const link = document.createElement("a")
-    link.href = "/usman-resume.pdf"
-    link.download = "Usman_Arshad_Resume.pdf"
-    link.target = "_blank"
+    try {
+      // Create a direct link to the PDF file
+      const link = document.createElement("a")
+      link.href = "/usman-arshad-resume.pdf"
+      link.download = "usman-arshad-resume.pdf"
+      link.target = "_blank" // Open in new tab as fallback
+      link.rel = "noopener noreferrer"
 
-    // Append to body, click, and remove
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+      // Append to body, click, and remove
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (error) {
+      console.error("Download failed:", error)
+    }
 
     // Reset downloading state after a short delay
     setTimeout(() => {
