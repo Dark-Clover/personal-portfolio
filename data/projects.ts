@@ -95,17 +95,17 @@ export const projects: Project[] = [
   },
   {
     id: "fake-news-detector",
-    title: "Fake News Detector in Python",
+    title: "Vericheck Fake News Detector",
     description:
-      "Developed an AI-powered agent using NLP models and datasets to analyze specific phrases and linguistic patterns, determining whether an article is real or fake. This project leveraged advanced Natural Language Processing techniques to enhance accuracy in misinformation detection.",
-    image: "/ai-fake-news-detection.png",
-    tags: ["Python", "NLP", "Machine Learning", "Artificial Neural Networks", "Classification"],
+      "Developed an AI-powered platform that analyzes news articles, social media posts, and other content to detect misinformation in real-time. Using advanced NLP models and machine learning algorithms, VeriCheck separates fact from fiction with high accuracy, helping users verify the credibility of online information.",
+    image: "/vericheck.png",
+    tags: ["Python", "NLP", "Machine Learning", "React", "Next.js", "AI"],
     github: "#",
-    demo: "#",
+    demo: "https://v0-veri-check-website-design.vercel.app/",
     category: "academic",
     date: "Nov 2024 - Jan 2025",
     institution: "Bahria University",
-    hideButtons: true,
+    hideButtons: false,
   },
   {
     id: "srs-document",
@@ -145,6 +145,7 @@ export const projects: Project[] = [
     github: "https://github.com/Dark-Clover/CodeAlpha_Image_Gallery",
     demo: "#",
     category: "personal",
+    hideButtons: true,
   },
   {
     id: "music-player",
@@ -156,5 +157,6 @@ export const projects: Project[] = [
     github: "https://github.com/Dark-Clover/Music-Player",
     demo: "#",
     category: "personal",
+    hideButtons: true,
   },
 ]
