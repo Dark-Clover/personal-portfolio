@@ -2,188 +2,115 @@
 
 import type React from "react"
 
-import { useState, useEffect, useRef, memo } from "react"
 import Image from "next/image"
-import { cn } from "@/lib/utils"
+import { useState, useEffect, useRef, useCallback } from "react"
 
 interface PerformanceImageProps {
   src: string
   alt: string
+  fill?: boolean
   width?: number
   height?: number
-  fill?: boolean
   className?: string
-  style?: React.CSSProperties
   priority?: boolean
   sizes?: string
-  quality?: number
   loading?: "eager" | "lazy"
-  fallbackSrc?: string
-  blurDataURL?: string
-  onLoadingComplete?: () => void
+  onLoadingComplete?: (img: HTMLImageElement) => void
 }
 
-function PerformanceImage({
+const PerformanceImage: React.FC<PerformanceImageProps> = ({
   src,
   alt,
+  fill,
   width,
   height,
-  fill = false,
-  className = "",
-  style = {},
-  priority = false,
-  sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw", // Responsive sizes
-  quality = 75,
+  className,
+  priority,
+  sizes,
   loading = "lazy",
-  fallbackSrc = "/placeholder.svg",
-  blurDataURL,
   onLoadingComplete,
-}: PerformanceImageProps) {
-  const [imgSrc, setImgSrc] = useState<string>(src)
+}) => {
+  const [imgSrc, setImgSrc] = useState<string | undefined>(loading === "eager" || priority ? src : undefined)
+  const imgRef = useRef<HTMLImageElement>(null)
   const [isLoaded, setIsLoaded] = useState(false)
-  const [hasError, setHasError] = useState(false)
-  const imageRef = useRef<HTMLImageElement>(null)
-  const observerRef = useRef<IntersectionObserver | null>(null)
 
-  // Generate a simple blur data URL if none provided
-  const placeholderBlur =
-    blurDataURL ||
-    `data:image/svg+xml;base64,${Buffer.from(
-      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width || 100} ${height || 100}">
-      <filter id="b" colorInterpolationFilters="sRGB">
-        <feGaussianBlur stdDeviation="20" />
-      </filter>
-      <rect width="100%" height="100%" fill="#3f3f46" />
-    </svg>`,
-    ).toString("base64")}`
+  const handleLoad = useCallback(
+    (img: HTMLImageElement) => {
+      setIsLoaded(true)
+      if (onLoadingComplete) {
+        onLoadingComplete(img)
+      }
+    },
+    [onLoadingComplete],
+  )
 
-  // Handle image loading errors
   useEffect(() => {
-    // Reset states when src changes
-    setIsLoaded(false)
-    setHasError(false)
-    setImgSrc(src)
-  }, [src])
+    if (loading === "eager" || priority) {
+      setImgSrc(src)
+      return
+    }
 
-  // Set up intersection observer for better lazy loading
-  useEffect(() => {
-    if (!imageRef.current || priority) return
+    if (typeof IntersectionObserver === "undefined") {
+      // Fallback for environments without IntersectionObserver (e.g., old browsers, SSR)
+      setImgSrc(src)
+      return
+    }
 
-    // Only observe if not using priority loading
     const observer = new IntersectionObserver(
       (entries) => {
-        if (!entries || entries.length === 0) return
-
-        const entry = entries[0]
-        if (entry && entry.isIntersecting && imageRef.current) {
-          // Preload the image when it's about to enter viewport
-          const img = new Image()
-          img.src = src
-          img.onload = () => {
-            if (imageRef.current) {
-              setImgSrc(src)
-            }
+        // Ensure entries exist and have length before trying to access them
+        if (entries && entries.length > 0) {
+          const [entry] = entries
+          // Explicitly check if the entry exists before accessing its properties
+          if (entry && entry.isIntersecting) {
+            setImgSrc(src)
+            // Disconnect observer once image starts loading
+            observer.disconnect()
           }
-          img.onerror = () => {
-            setHasError(true)
-            setImgSrc(fallbackSrc)
-          }
-
-          // Stop observing once triggered
-          observer.disconnect()
         }
       },
       {
-        rootMargin: "200px", // Start loading 200px before it enters viewport
-        threshold: 0.01,
+        rootMargin: "200px", // Load image when it's 200px from viewport
       },
     )
 
-    observerRef.current = observer
-
-    if (imageRef.current) {
-      observer.observe(imageRef.current)
+    if (imgRef.current) {
+      observer.observe(imgRef.current)
     }
 
     return () => {
-      observer.disconnect()
+      // Ensure observer exists before trying to disconnect
+      if (observer) {
+        observer.disconnect()
+      }
     }
-  }, [src, priority, fallbackSrc])
-
-  // Combine provided styles with loading state styles
-  const combinedStyles = {
-    ...style,
-    transition: "filter 0.3s ease, transform 0.3s ease, opacity 0.3s ease",
-  }
-
-  // Handle image load completion
-  const handleLoadComplete = () => {
-    setIsLoaded(true)
-    if (onLoadingComplete) {
-      onLoadingComplete()
-    }
-  }
-
-  // Handle image load error
-  const handleError = () => {
-    setHasError(true)
-    setImgSrc(fallbackSrc)
-  }
+  }, [src, loading, priority])
 
   return (
-    <div
-      ref={imageRef}
-      className={cn("relative overflow-hidden bg-gray-800/20", fill ? "h-full w-full" : "", className)}
-      style={{
-        height: height || (fill ? "100%" : "auto"),
-        width: width || (fill ? "100%" : "auto"),
-        position: fill ? "relative" : "static",
-      }}
-    >
-      {/* Shimmer effect while loading */}
-      {!isLoaded && (
-        <div
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/10 to-transparent"
-          style={{
-            backgroundSize: "200% 100%",
-            animation: "shimmer 1.5s infinite",
-            zIndex: 1,
-          }}
-        />
-      )}
-
+    <div className={`relative ${fill ? "h-full w-full" : ""}`}>
       <Image
-        src={hasError ? fallbackSrc : imgSrc}
+        ref={imgRef}
+        src={imgSrc || "/placeholder.svg"} // Use a placeholder if imgSrc is not yet set
         alt={alt}
+        fill={fill}
         width={fill ? undefined : width}
         height={fill ? undefined : height}
-        fill={fill}
-        className={cn("transition-opacity duration-300 ease-in-out", isLoaded ? "opacity-100" : "opacity-0")}
-        style={combinedStyles}
+        className={`${className} ${isLoaded ? "opacity-100" : "opacity-0"} transition-opacity duration-500`}
         priority={priority}
         sizes={sizes}
-        quality={quality}
-        loading={loading}
-        onLoadingComplete={handleLoadComplete}
-        onError={handleError}
-        placeholder="blur"
-        blurDataURL={placeholderBlur}
+        onLoad={(e) => handleLoad(e.currentTarget)}
+        onError={(e) => {
+          console.error("Image failed to load:", e.currentTarget.src)
+          setImgSrc("/placeholder.svg") // Fallback to a generic placeholder on error
+        }}
       />
+      {!isLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-800/40 animate-pulse rounded-md">
+          {/* Optional: Add a spinner or custom loading indicator */}
+        </div>
+      )}
     </div>
   )
 }
 
-// Add shimmer animation to global CSS
-const shimmerCSS = `
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-`
-
-// Memoize the component to prevent unnecessary re-renders
-export default memo(PerformanceImage)
+export default PerformanceImage

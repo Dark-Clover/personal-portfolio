@@ -9,7 +9,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ExternalLink,
-  Github,
   Star,
   Calendar,
   Briefcase,
@@ -21,9 +20,12 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import dynamic from "next/dynamic"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import PerformanceImage from "./performance-image" // Ensure this import is correct
+import { projects } from "@/data/projects"
+import Link from "next/link"
 
 // Dynamically import the optimized image component
-const PerformanceImage = dynamic(() => import("./performance-image"), {
+const LazyPerformanceImage = dynamic(() => import("./performance-image"), {
   ssr: true,
   loading: ({ isLoading }) => {
     return isLoading ? <div className="bg-gray-800 animate-pulse h-full w-full rounded-md"></div> : null
@@ -45,9 +47,6 @@ interface Project {
   hideButtons?: boolean
   featured?: boolean
 }
-
-// Project data - moved to a separate file to reduce component size
-import { projects } from "@/data/projects"
 
 // Featured Project Slider component - Memoized for performance
 const FeaturedProjectSlider = memo(
@@ -83,7 +82,6 @@ const FeaturedProjectSlider = memo(
       setTimeout(() => setIsAnimating(false), 500)
     }, [isAnimating, featuredProjects.length])
 
-    // Reset autoplay when index changes
     useEffect(() => {
       if (autoplayRef.current) {
         clearInterval(autoplayRef.current)
@@ -115,7 +113,6 @@ const FeaturedProjectSlider = memo(
       }
     }, [goToNext])
 
-    // Touch handlers for mobile swipe
     const handleTouchStart = useCallback((e: React.TouchEvent) => {
       touchStartX.current = e.touches[0].clientX
     }, [])
@@ -137,11 +134,9 @@ const FeaturedProjectSlider = memo(
       }
     }, [goToNext, goToPrev])
 
-    // Preload next image for smoother transitions
     useEffect(() => {
       if (typeof window === "undefined") return
 
-      // Only preload in idle time
       if ("requestIdleCallback" in window) {
         ;(window as any).requestIdleCallback(() => {
           const nextIndex = currentIndex === featuredProjects.length - 1 ? 0 : currentIndex + 1
@@ -149,7 +144,7 @@ const FeaturedProjectSlider = memo(
           img.src = featuredProjects[nextIndex].image
         })
       } else {
-        // Fallback for browsers that don't support requestIdleCallback
+        // Fallback
         setTimeout(() => {
           const nextIndex = currentIndex === featuredProjects.length - 1 ? 0 : currentIndex + 1
           const img = new Image()
@@ -180,7 +175,7 @@ const FeaturedProjectSlider = memo(
               transition={{ duration: 0.5 }}
               className="h-full w-full"
             >
-              <PerformanceImage
+              <LazyPerformanceImage
                 src={currentProject.image}
                 alt={currentProject.title}
                 fill
@@ -312,7 +307,6 @@ const ProjectCard = memo(
     })
     const [isImageLoaded, setIsImageLoaded] = useState(false)
 
-    // Category-specific styling
     const getCategoryStyles = () => {
       switch (project.category) {
         case "professional":
@@ -335,7 +329,6 @@ const ProjectCard = memo(
 
     const categoryStyles = getCategoryStyles()
 
-    // Staggered animation delay based on index
     const animationDelay = index * 0.1
 
     return (
@@ -430,30 +423,20 @@ const ProjectCard = memo(
               )}
             </div>
 
-            <div className="flex space-x-2">
+            <div className="mt-4 flex gap-3">
               {!project.hideButtons && (
-                <Button
-                  size="sm"
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full flex-1"
-                  asChild
-                >
-                  <a href={project.demo} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    View Live Site
-                  </a>
+                <Button size="sm" asChild>
+                  <Link href={project.demo} target="_blank">
+                    View Live
+                  </Link>
                 </Button>
               )}
 
               {!project.hideButtons && project.github !== "#" && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700 rounded-full"
-                  asChild
-                >
-                  <a href={project.github} target="_blank" rel="noopener noreferrer">
-                    <Github className="h-4 w-4" />
-                  </a>
+                <Button size="sm" variant="outline" asChild>
+                  <Link href={project.github} target="_blank">
+                    GitHub
+                  </Link>
                 </Button>
               )}
             </div>
@@ -476,14 +459,15 @@ function ProjectShowcase() {
   const [activeCategory, setActiveCategory] = useState<string>("all")
   const isMobile = useMediaQuery("(max-width: 640px)")
   const [isLoading, setIsLoading] = useState(true)
+  const autoplayRef = useRef<NodeJS.Timeout | null>(null)
+  const touchStartX = useRef<number>(0)
+  const touchEndX = useRef<number>(0)
 
-  // Filter projects by category
   const filteredProjects = useMemo(() => {
     if (activeCategory === "all") return projects
     return projects.filter((p) => p.category === activeCategory)
   }, [activeCategory])
 
-  // Group projects by category for organized display
   const groupedProjects = useMemo(() => {
     const professional = projects.filter((p) => p.category === "professional" && !p.featured)
     const academic = projects.filter((p) => p.category === "academic")
@@ -496,7 +480,6 @@ function ProjectShowcase() {
     window.open(project.demo, "_blank")
   }, [])
 
-  // Simulate loading state for better UX
   useEffect(() => {
     setIsLoading(true)
     const timer = setTimeout(() => {
@@ -505,13 +488,10 @@ function ProjectShowcase() {
     return () => clearTimeout(timer)
   }, [activeCategory])
 
-  // Preload images for better performance
   useEffect(() => {
     if (typeof window === "undefined") return
 
-    // Use requestIdleCallback for non-critical preloading
     const preloadImages = () => {
-      // Preload featured project images first
       const featuredProjects = projects.filter((p) => p.featured)
 
       if ("requestIdleCallback" in window) {
