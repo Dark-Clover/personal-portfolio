@@ -290,6 +290,21 @@ export default function Resume() {
                       tools and methodologies.
                     </p>
                   </motion.div>
+
+                  <motion.div
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.4 }} // Increased delay for new item
+                    className="relative pl-6 border-l-2 border-emerald-500/30 mt-6"
+                  >
+                    <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-emerald-500"></div>
+                    <h3 className="text-lg font-semibold">Google Business Intelligence</h3>
+                    <p className="text-sm text-foreground/70">Google</p>
+                    <p className="mt-2 text-sm">
+                      Skills to analyze data, build dashboards, and make data-driven decisions. It covers SQL, data
+                      modeling, data visualization with tools like Looker, and core BI concepts.
+                    </p>
+                  </motion.div>
                 </div>
               </CardContent>
             </Card>
