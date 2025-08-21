@@ -84,7 +84,7 @@ export const projects: Project[] = [
     title: "Reflections with Rubina - US based Therapy booking system",
     description:
       "Developed a comprehensive therapy booking system for a US-based therapist, featuring a live and CRUD dashboard for appointment management, secure Authorize.net payment integration, a user-friendly design, Supabase for database management, and automated email notifications.",
-    image: "/reflections with rubina image.png",
+    image: "/reflections-with-rubina-image.png",
     tags: [
       "Next.js",
       "React",
@@ -106,7 +106,7 @@ export const projects: Project[] = [
     title: "The Airports Transfer Limited - UK Based CAB booking system",
     description:
       "Built a robust UK-based cab booking system for point-to-point and airport transfers. Features include a detailed booking flow, real-time journey route fare estimator, miles calculator, secure Stripe payment integration, advanced branding, and a comprehensive database.",
-    image: "/tatl image.png",
+    image: "/tatl-image.png",
     tags: [
       "Next.js",
       "React",
@@ -128,7 +128,7 @@ export const projects: Project[] = [
     title: "Baba Fareed Suitings - Ecommerce Store",
     description:
       "Developed a sophisticated e-commerce store for a suitings brand, featuring a user-friendly interface, comprehensive mail notification system, an intuitive dashboard for order management, and a robust order tracking system with integrated database.",
-    image: "/babafareed image.png",
+    image: "/babafareed-image.png",
     tags: [
       "Next.js",
       "React",
@@ -150,7 +150,7 @@ export const projects: Project[] = [
     title: "Savvy Perfumes - UAE based Ecommerce Store",
     description:
       "Crafted a minimal and luxurious e-commerce store for a UAE-based perfume brand. Unique features include GPT-generated product images, a comprehensive dashboard, advanced tracking system, automated email notifications, and seamless integration with Supabase for data management.",
-    image: "/savvy image.png",
+    image: "/savvy-image.png",
     tags: [
       "Next.js",
       "React",
@@ -174,7 +174,7 @@ export const projects: Project[] = [
     title: "The Big Hustler Website Page - Dubai Based Magazine",
     description:
       "Designed and developed a premium and elite website page for a Dubai-based magazine, 'The Big Hustler'. The site features a sophisticated theme, high-quality content presentation, and exclusive features tailored for a discerning audience.",
-    image: "/tbh image.png",
+    image: "/tbh-image.png",
     tags: [
       "Next.js",
       "React",
