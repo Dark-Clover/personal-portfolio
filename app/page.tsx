@@ -8,6 +8,9 @@ import dynamic from "next/dynamic"
 // Import lightweight components directly
 import GlitchText from "@/components/glitch-text"
 import TerminalText from "@/components/terminal-text"
+import ThemeToggle from "@/components/theme-toggle"
+import Accessibility from "@/components/accessibility"
+import MobileNav from "@/components/mobile-nav"
 
 // Simple loading components
 const SectionSkeleton = () => (
@@ -40,6 +43,10 @@ const About = dynamic(() => import("@/components/about"), {
   loading: () => <SectionSkeleton />,
 })
 
+const Skills = dynamic(() => import("@/components/skills"), {
+  loading: () => <SectionSkeleton />,
+})
+
 const ProjectShowcase = dynamic(() => import("@/components/project-showcase"), {
   loading: () => <SectionSkeleton />,
 })
@@ -51,6 +58,8 @@ const Resume = dynamic(() => import("@/components/resume"), {
 const Contact = dynamic(() => import("@/components/contact"), {
   loading: () => <SectionSkeleton />,
 })
+
+
 
 const Footer = dynamic(() => import("@/components/footer"), {
   loading: () => <SectionSkeleton />,
@@ -270,8 +279,18 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             ref={sectionsRef}
             className="smooth-scroll"
+            id="main-content"
           >
             <Navbar />
+            
+            {/* Theme Toggle - Fixed Position */}
+            <div className="fixed top-6 right-6 z-40">
+              <ThemeToggle />
+            </div>
+            
+            {/* Mobile Navigation */}
+            <MobileNav className="fixed top-6 left-6 z-40" />
+            
             <div className="container mx-auto px-4">
               {/* Load hero section immediately */}
               <Suspense fallback={<SectionSkeleton />}>
@@ -281,6 +300,10 @@ export default function Home() {
               {/* Load other sections with progressive enhancement */}
               <Suspense fallback={<SectionSkeleton />}>
                 <About />
+              </Suspense>
+
+              <Suspense fallback={<SectionSkeleton />}>
+                <Skills />
               </Suspense>
 
               <Suspense fallback={<SectionSkeleton />}>
@@ -304,6 +327,18 @@ export default function Home() {
       </AnimatePresence>
 
       <Toaster />
+      
+      {/* Accessibility Component */}
+      <Accessibility />
+      
+      {/* Skip to main content link */}
+      <a
+        href="#main-content"
+        className="skip-link"
+        aria-label="Skip to main content"
+      >
+        Skip to main content
+      </a>
     </main>
   )
 }

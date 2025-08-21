@@ -171,12 +171,12 @@ function Skills() {
           variants={itemVariants}
           className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6"
         >
-          {[
-            { label: "Years Experience", value: "3+", icon: <TrendingUp className="h-6 w-6" /> },
-            { label: "Projects Completed", value: "25+", icon: <Code className="h-6 w-6" /> },
-            { label: "Technologies", value: "20+", icon: <Layers className="h-6 w-6" /> },
-            { label: "Client Satisfaction", value: "98%", icon: <Zap className="h-6 w-6" /> },
-          ].map((stat, index) => (
+                              {[
+                      { label: "Years Experience", value: "1+", icon: <TrendingUp className="h-6 w-6" /> },
+                      { label: "Projects Completed", value: "20+", icon: <Code className="h-6 w-6" /> },
+                      { label: "Technologies", value: "20+", icon: <Layers className="h-6 w-6" /> },
+                      { label: "Client Satisfaction", value: "98%", icon: <Zap className="h-6 w-6" /> },
+                    ].map((stat, index) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}

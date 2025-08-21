@@ -26,8 +26,8 @@ export default function ResumeDownloadButton({
 
     // Create a direct link to the PDF file with download attribute
     const link = document.createElement("a")
-    link.href = "/usman-arshad-resume.pdf" // Change to PDF file
-    link.download = "usman-arshad-resume.pdf" // Change filename to PDF
+    link.href = "/resume.pdf" // Use the actual PDF file in public folder
+    link.download = "Usman-Arshad-Resume.pdf" // Set a nice filename for download
 
     // Append to body, click, and remove
     document.body.appendChild(link)

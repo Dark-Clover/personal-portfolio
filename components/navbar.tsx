@@ -29,6 +29,7 @@ export default function Navbar() {
   const navLinks = [
     { name: "Home", href: "#home" },
     { name: "About", href: "#about" },
+    { name: "Skills", href: "#skills" },
     { name: "Projects", href: "#projects" },
     { name: "Resume", href: "#resume" },
     { name: "Contact", href: "#contact" },
@@ -87,7 +88,7 @@ export default function Navbar() {
               <span className="sr-only">GitHub</span>
             </motion.a>
             <motion.a
-              href="https://linkedin.com/in/"
+              href="https://www.linkedin.com/in/usman-arshad-647235247"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1, rotate: -5 }}
