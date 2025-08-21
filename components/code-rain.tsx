@@ -1,11 +1,10 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { useTheme } from "next-themes"
+
 
 export default function CodeRain({ className = "" }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const { theme } = useTheme()
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -39,14 +38,11 @@ export default function CodeRain({ className = "" }: { className?: string }) {
     // Drawing function
     const draw = () => {
       // Semi-transparent black to create fade effect
-      ctx.fillStyle = theme === "dark" ? "rgba(0, 0, 0, 0.05)" : "rgba(255, 255, 255, 0.05)"
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)"
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       // Set text color
-      ctx.fillStyle =
-        theme === "dark"
-          ? "#10b981" // emerald-500 in dark mode
-          : "#059669" // emerald-600 in light mode
+      ctx.fillStyle = "#10b981" // emerald-500 in dark mode
       ctx.font = `${fontSize}px monospace`
 
       // Loop through each column
@@ -73,7 +69,7 @@ export default function CodeRain({ className = "" }: { className?: string }) {
       clearInterval(interval)
       window.removeEventListener("resize", resizeCanvas)
     }
-  }, [theme])
+  }, [])
 
   return <canvas ref={canvasRef} className={`fixed inset-0 z-0 opacity-20 pointer-events-none ${className}`} />
 }

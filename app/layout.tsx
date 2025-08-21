@@ -2,7 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import "./globals.css"
 import "../styles/accessibility.css"
-import { ThemeProvider } from "@/components/theme-provider"
+
 
 export const metadata: Metadata = {
   title: "Usman Arshad | Developer Portfolio",
@@ -39,9 +39,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          {children}
-        </ThemeProvider>
+        {children}
       </body>
     </html>
   )

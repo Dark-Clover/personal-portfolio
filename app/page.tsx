@@ -8,7 +8,7 @@ import dynamic from "next/dynamic"
 // Import lightweight components directly
 import GlitchText from "@/components/glitch-text"
 import TerminalText from "@/components/terminal-text"
-import ThemeToggle from "@/components/theme-toggle"
+
 import Accessibility from "@/components/accessibility"
 import MobileNav from "@/components/mobile-nav"
 
@@ -283,10 +283,7 @@ export default function Home() {
           >
             <Navbar />
             
-            {/* Theme Toggle - Fixed Position */}
-            <div className="fixed top-6 right-6 z-40">
-              <ThemeToggle />
-            </div>
+
             
             {/* Mobile Navigation */}
             <MobileNav className="fixed top-6 left-6 z-40" />

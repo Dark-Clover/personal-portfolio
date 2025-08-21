@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState, memo } from "react"
-import { useTheme } from "next-themes"
+
 
 interface Particle {
   x: number
@@ -14,7 +14,6 @@ interface Particle {
 
 function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const { theme } = useTheme()
   const [isVisible, setIsVisible] = useState(true)
   const particlesRef = useRef<Particle[]>([])
   const animationRef = useRef<number>()
@@ -61,7 +60,7 @@ function ParticleBackground() {
           size: Math.random() * 1.5 + 0.5, // Smaller particles
           speedX: (Math.random() - 0.5) * 0.05, // Much slower movement
           speedY: (Math.random() - 0.5) * 0.05,
-          color: theme === "dark" ? "#10b981" : "#059669",
+          color: "#10b981", // Always emerald-500 for dark mode
         })
       }
     }
@@ -79,8 +78,7 @@ function ParticleBackground() {
           if (distance < maxDistance) {
             // Set opacity based on distance
             const opacity = 1 - distance / maxDistance
-            ctx.strokeStyle =
-              theme === "dark" ? `rgba(16, 185, 129, ${opacity * 0.1})` : `rgba(5, 150, 105, ${opacity * 0.1})`
+            ctx.strokeStyle = `rgba(16, 185, 129, ${opacity * 0.1})` // Always emerald for dark mode
             ctx.lineWidth = 0.5 // Thinner lines
             ctx.beginPath()
             ctx.moveTo(particlesRef.current[i].x, particlesRef.current[i].y)
@@ -163,7 +161,7 @@ function ParticleBackground() {
       }
       observer.disconnect()
     }
-  }, [theme, isVisible])
+  }, [isVisible])
 
   return <canvas ref={canvasRef} className="fixed inset-0 z-0 opacity-20 pointer-events-none will-change-transform" />
 }
