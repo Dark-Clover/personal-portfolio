@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usman Arshad - Resume</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      color: #10b981;
+      border-bottom: 2px solid #10b981;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #10b981;
+      margin-top: 20px;
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+    .experience-item, .education-item {
+      margin-bottom: 20px;
+    }
+    .experience-title, .education-degree {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .experience-company, .education-school {
+      font-style: italic;
+      margin-bottom: 5px;
+    }
+    .experience-period, .education-period {
+      color: #666;
+      margin-bottom: 5px;
+    }
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .skill {
+      background-color: #f0f9f6;
+      border: 1px solid #10b981;
+      border-radius: 15px;
+      padding: 5px 10px;
+      font-size: 14px;
+    }
+    .contact-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+    }
+    .print-button {
+      background-color: #10b981;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .two-column {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .column {
+      flex: 1;
+      min-width: 250px;
+    }
+    .experience-description {
+      margin-top: 10px;
+    }
+    .experience-description ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .experience-description li {
+      margin-bottom: 5px;
+    }
+    @media print {
+      .print-button {
+        display: none;
+      }
+      body {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="print-button" onclick="window.print()">Print Resume</button>
+  
+  <h1>USMAN ARSHAD</h1>
+  <p>WEB & MOBILE DEVELOPER | FULL STACK | DATABASE ADMIN</p>
+  
+  <div class="contact-info">
+    <div class="contact-item">
+      <strong>Email:</strong> <a href="mailto:usman11arshad22@gmail.com">usman11arshad22@gmail.com</a>
+    </div>
+    <div class="contact-item">
+      <strong>Phone:</strong> +92 333 8239991
+    </div>
+    <div class="contact-item">
+      <strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/usman-arshad-647235247" target="_blank">linkedin.com/in/usman-arshad-647235247</a>
+    </div>
+    <div class="contact-item">
+      <strong>Website:</strong> <a href="https://www.usmanarshad.tech" target="_blank">www.usmanarshad.tech</a>
+    </div>
+  </div>
+  
+  <div class="section">
+    <h2>PROFILE</h2>
+    <p>IT student at Bahria University with experience delivering full-stack projects for international clients. Proficient in Python, SQL, Next.js, Flutter, and Microsoft Access, with a background in ERP systems. Skilled in project management, networking, and software requirement engineering. Known for critical thinking, fast decision-making, and teamwork—enhanced through gaming and an entrepreneurial mindset.</p>
+  </div>
+  
+  <div class="two-column">
+    <div class="column">
+      <div class="section">
+        <h2>SKILLS</h2>
+        <div class="skills-list">
+          <div class="skill">Next.JS</div>
+          <div class="skill">React</div>
+          <div class="skill">Flutter</div>
+          <div class="skill">Database Administration (SQL)</div>
+          <div class="skill">AI Model Training</div>
+          <div class="skill">Data Science</div>
+          <div class="skill">Web Scrapping</div>
+          <div class="skill">SEO</div>
+          <div class="skill">API Integration</div>
+          <div class="skill">UI/UX Design</div>
+          <div class="skill">Video Editing</div>
+          <div class="skill">Flyer/ Logo Design</div>
+          <div class="skill">Technical Writing</div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>CERTIFICATIONS</h2>
+        <div class="experience-item">
+          <div class="experience-title">Google IT Support Specialist</div>
+          <div class="experience-company">Google</div>
+        </div>
+        <div class="experience-item">
+          <div class="experience-title">Google UX/UI Designer</div>
+          <div class="experience-company">Google</div>
+        </div>
+        <div class="experience-item">
+          <div class="experience-title">Next.js (App Router, Pages Router), React Foundations & SEO</div>
+          <div class="experience-company">Certified by Vercel</div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>EDUCATION</h2>
+        <div class="education-item">
+          <div class="education-degree">Bachelor's in Information Technology</div>
+          <div class="education-school">Bahria University Islamabad Campus</div>
+          <div class="education-period">2022 - 2036</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="column">
+      <div class="section">
+        <h2>WORK EXPERIENCE</h2>
+        <div class="experience-item">
+          <div class="experience-title">Full Stack Web/App Developer</div>
+          <div class="experience-company">Triadic Marketing, United Arab Emirates</div>
+          <div class="experience-period">Dec 2024 - Present</div>
+          <div class="experience-description">
+            <ul>
+              <li>Independently developing and delivering full-stack web and mobile applications for international clients</li>
+              <li>Building both frontend and backend solutions, ensuring seamless integration and performance</li>
+              <li>Designing and implementing visually appealing, user-friendly UI/UX for enhanced customer experience</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="experience-item">
+          <div class="experience-title">Management Team Member</div>
+          <div class="experience-company">Zindigi Prize x Bahria</div>
+          <div class="experience-period">Aug 2024 - Sep 2024</div>
+          <div class="experience-description">
+            <ul>
+              <li>Promoting startup events and fintech initiatives by driving awareness and engagement</li>
+              <li>Coordinating cross-functional teams to ensure seamless event execution and project milestones</li>
+              <li>Facilitating communication between stakeholders to align objectives and ensure project success</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="experience-item">
+          <div class="experience-title">Sales Specialist</div>
+          <div class="experience-company">Touchstone Communications PK</div>
+          <div class="experience-period">Mar 2025 - Present</div>
+          <div class="experience-description">
+            <ul>
+              <li>Delivered high-level customer service and sales strategies in a dynamic, target-driven environment</li>
+              <li>Managed client relationships and upsold services, meeting and exceeding KPIs</li>
+              <li>Coordinated sales processes and handled product inquiries, enhancing customer satisfaction</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Print functionality
+    document.querySelector('.print-button').addEventListener('click', function() {
+      window.print();
+    });
+  </script>
+</body>
+</html>
