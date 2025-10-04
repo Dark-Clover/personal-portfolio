@@ -164,7 +164,7 @@ export const projects: Project[] = [
       "UAE Market",
     ],
     github: "#",
-    demo: "https://www.alfredverne.com/",
+    demo: "https://www.savvyintl.ae/",
     category: "professional",
     date: "2024",
     featured: true,
