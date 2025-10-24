@@ -232,7 +232,7 @@ export default function Contact() {
                         href="tel:+923243432335" 
                         className="text-emerald-400 hover:text-emerald-300 transition-colors"
                       >
-                        +92 300 123 4567
+                        +92 324 343 2335
                       </a>
                     </div>
                   </div>
