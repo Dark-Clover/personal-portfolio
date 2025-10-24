@@ -229,7 +229,7 @@ export default function Contact() {
                     <div>
                       <p className="font-medium">Phone</p>
                       <a 
-                        href="tel:+923001234567" 
+                        href="tel:+923243432335" 
                         className="text-emerald-400 hover:text-emerald-300 transition-colors"
                       >
                         +92 300 123 4567
