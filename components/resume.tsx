@@ -69,6 +69,13 @@ export default function Resume() {
       period: "2021 - 2022",
       description: "Demonstrated strong communication and sales skills while working with international clients.",
     },
+    {
+      title: "Tutor",
+      company: "Private Tutoring",
+      period: "2022 - Present",
+      description:
+        "Over two years of tutoring experience with students across age groups and academic levels; adapts teaching methods to individual learning needs effectively.",
+    },
   ]
 
   return (
@@ -152,83 +159,21 @@ export default function Resume() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  <motion.div
-                    initial={{ x: -20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.1 }}
-                    className="relative pl-6 border-l-2 border-emerald-500/30"
-                  >
-                    <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-emerald-500"></div>
-                    <h3 className="text-lg font-semibold">Web/App Developer</h3>
-                    <p className="text-sm text-foreground/70">Triadic Marketing Media</p>
-                    <p className="text-sm text-foreground/70">2023 - Present</p>
-                    <p className="mt-2 text-sm">
-                      Developing responsive websites and mobile applications for clients. Implementing modern UI/UX
-                      designs and ensuring cross-platform compatibility.
-                    </p>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ x: -20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.1 }}
-                    className="relative pl-6 border-l-2 border-emerald-500/30"
-                  >
-                    <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-emerald-500"></div>
-                    <h3 className="text-lg font-semibold">Team Management</h3>
-                    <p className="text-sm text-foreground/70">Zindagi Prize</p>
-                    <p className="text-sm text-foreground/70">2022 - 2023</p>
-                    <p className="mt-2 text-sm">
-                      Led a team of developers and designers to create innovative solutions. Managed project timelines,
-                      delegated tasks, and ensured quality deliverables.
-                    </p>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ x: -20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.1 }}
-                    className="relative pl-6 border-l-2 border-emerald-500/30"
-                  >
-                    <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-emerald-500"></div>
-                    <h3 className="text-lg font-semibold">Backend Developer & Firebase Integration Lead</h3>
-                    <p className="text-sm text-foreground/70">H2H Courses</p>
-                    <p className="text-sm text-foreground/70">2023 - Present</p>
-                    <p className="mt-2 text-sm">
-                      Led backend development for an online learning platform, implementing Firebase authentication,
-                      Stripe payment integration, and Firestore database management.
-                    </p>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ x: -20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className="relative pl-6 border-l-2 border-emerald-500/30"
-                  >
-                    <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-emerald-500"></div>
-                    <h3 className="text-lg font-semibold">ERP System Developer</h3>
-                    <p className="text-sm text-foreground/70">Freelance</p>
-                    <p className="text-sm text-foreground/70">2022 - 2023</p>
-                    <p className="mt-2 text-sm">
-                      Developed comprehensive ERP systems using Microsoft Access for small businesses.
-                    </p>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ x: -20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="relative pl-6 border-l-2 border-emerald-500/30"
-                  >
-                    <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-emerald-500"></div>
-                    <h3 className="text-lg font-semibold">Customer Sales Associate</h3>
-                    <p className="text-sm text-foreground/70">Touchstone Communications</p>
-                    <p className="text-sm text-foreground/70">2021 - 2022</p>
-                    <p className="mt-2 text-sm">
-                      Demonstrated strong communication and sales skills while working with international clients.
-                    </p>
-                  </motion.div>
+                  {experiences.map((exp, index) => (
+                    <motion.div
+                      key={`${exp.title}-${exp.company}-${exp.period}`}
+                      initial={{ x: -20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: 0.1 + index * 0.05 }}
+                      className="relative pl-6 border-l-2 border-emerald-500/30"
+                    >
+                      <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-emerald-500"></div>
+                      <h3 className="text-lg font-semibold">{exp.title}</h3>
+                      <p className="text-sm text-foreground/70">{exp.company}</p>
+                      <p className="text-sm text-foreground/70">{exp.period}</p>
+                      <p className="mt-2 text-sm">{exp.description}</p>
+                    </motion.div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
