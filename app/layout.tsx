@@ -7,7 +7,7 @@ import "../styles/accessibility.css"
 export const metadata: Metadata = {
   title: "Usman Arshad | Developer Portfolio",
   description: "Full-stack developer specializing in web and mobile applications",
-  metadataBase: new URL("https://usmanarshad.com"),
+  metadataBase: new URL("https://www.usmanarshad.tech"),
   openGraph: {
     title: "Usman Arshad | Developer Portfolio",
     description: "Full-stack developer specializing in web and mobile applications",

@@ -16,7 +16,7 @@ export default function MetaTags({
   description = "Full-stack developer specializing in web and mobile applications with expertise in Firebase, React, and Flutter. Based in Islamabad, Pakistan.",
   keywords = "Full-Stack Developer, React Developer, Next.js, Firebase, Flutter, Web Development, Mobile Development, Pakistan, Islamabad, Bahria University",
   image = "/og-image.png",
-  url = "https://usman-portfolio.vercel.app",
+  url = "https://www.usmanarshad.tech",
   type = "website"
 }: MetaTagsProps) {
   return (

@@ -107,7 +107,7 @@ function Hero() {
               </div>
               <div className="text-gray-300 text-left">
                 <div className="flex items-start overflow-hidden whitespace-nowrap">
-                  <span className="text-emerald-500 whitespace-nowrap">guest@usman-portfolio</span>
+                  <span className="text-emerald-500 whitespace-nowrap">guest@usmanarshad</span>
                   <span className="text-gray-400 whitespace-nowrap">:~$</span>
                   <TerminalText
                     text=" ./introduce.sh"

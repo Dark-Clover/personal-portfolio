@@ -11,6 +11,7 @@ import TerminalText from "@/components/terminal-text"
 
 import Accessibility from "@/components/accessibility"
 import MobileNav from "@/components/mobile-nav"
+import Resume from "@/components/resume"
 
 // Simple loading components
 const SectionSkeleton = () => (
@@ -48,10 +49,6 @@ const Skills = dynamic(() => import("@/components/skills"), {
 })
 
 const ProjectShowcase = dynamic(() => import("@/components/project-showcase"), {
-  loading: () => <SectionSkeleton />,
-})
-
-const Resume = dynamic(() => import("@/components/resume"), {
   loading: () => <SectionSkeleton />,
 })
 

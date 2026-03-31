@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://usmanarshad.com/sitemap.xml
+Sitemap: https://www.usmanarshad.tech/sitemap.xml
